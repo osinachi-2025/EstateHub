@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Schedule a Viewing — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell"><div class="dash">
+    <div class="dash-side">
+      <button class="dash-toggle" type="button" aria-label="Toggle dashboard navigation">☰</button>
+      <a class="dash-item " href="customer-dashboard.html">Overview</a><a class="dash-item " href="saved-properties.html">Saved Properties</a><a class="dash-item on" href="schedule-viewing.html">My Viewings</a><a class="dash-item " href="customer-messages.html">Messages</a><a class="dash-item " href="checkout.html">Payments</a><a class="dash-item " href="reviews.html">My Reviews</a>
+    </div>
+    <div class="dash-main">
+<div class="dash-head"><h2 class="h">Schedule a Viewing</h2></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+  <div class="form-panel"><form method="post">
+    <div class="f-group" style="margin-bottom:14px"><label>Property</label><select name="property_id" required>{% for property in properties %}<option value="{{ property.id }}" {% if property.id == selected_property_id %}selected{% endif %}>{{ property.title }}</option>{% else %}<option value="">No properties available</option>{% endfor %}</select></div>
+    <div class="f-row"><div class="f-group"><label>Preferred Date</label><input name="viewing_date" type="date" required></div><div class="f-group"><label>Preferred Time</label><input name="viewing_time" type="time" required></div></div>
+    <div class="f-group" style="margin-bottom:16px"><label>Note to agent (optional)</label><textarea name="note" placeholder="Anything the agent should know..."></textarea></div>
+    <button class="btn btn-clay" type="submit">Confirm Viewing Request</button>
+  </form>
+  </div>
+  <div>
+    <h3 class="h" style="margin-bottom:12px">Upcoming</h3>
+    {% for viewing in viewings %}<div class="card" style="padding:16px;margin-bottom:10px"><b>{{ viewing.property.title }}</b><div style="font-size:12px;color:#5B6660;margin-top:4px">{{ viewing.viewing_date }} · {{ viewing.viewing_time.strftime('%H:%M') }}</div><span class="badge-pill pill-{{ 'ok' if viewing.status == 'confirmed' else 'warn' }}" style="margin-top:8px;display:inline-block">{{ viewing.status|title }}</span></div>{% else %}<div class="empty">No viewings scheduled.</div>{% endfor %}
+  </div>
+</div>
+</div>
+  </div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+</body>
+</html>

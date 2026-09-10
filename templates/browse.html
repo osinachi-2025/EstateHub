@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Browse Listings — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell">
+<div class="topbar">
+    <a class="brand" href="{{ url_for('home') }}"><div class="mk">C</div>Celtine</a>
+    <nav><a class="" href="{{ url_for('home') }}">Home</a><a class="on" href="{{ url_for('browse') }}">Buy / Rent</a><a class="" href="{{ url_for('about') }}">About</a><a class="" href="{{ url_for('contact') }}">Contact</a></nav>
+    <div class="actions">{% if current_user %}<a class="btn btn-line btn-sm" href="{{ url_for('posterdashboard') if current_user.role == 'agent' else url_for('customerdashboard') }}">Dashboard</a><a class="btn btn-clay btn-sm" href="{{ url_for('logout') }}">Log out</a>{% else %}<a class="btn btn-line btn-sm" href="{{ url_for('login') }}">Log in</a><a class="btn btn-clay btn-sm" href="{{ url_for('postproperty') }}">List a Property</a>{% endif %}</div>
+  </div>
+<div class="section-tight" style="display:flex;gap:26px">
+  <form method="get" action="{{ url_for('browse') }}" style="width:230px;flex:none">
+    <h3 class="h" style="margin-bottom:14px">Filters</h3>
+    <div class="f-group" style="margin-bottom:16px"><label for="purpose">Purpose</label><select id="purpose" name="purpose"><option value="">Any purpose</option><option value="rent" {% if purpose == 'rent' %}selected{% endif %}>Rent</option><option value="sale" {% if purpose == 'sale' %}selected{% endif %}>Buy</option><option value="shortlet" {% if purpose == 'shortlet' %}selected{% endif %}>Shortlet</option></select></div>
+    <div class="f-group" style="margin-bottom:16px"><label for="min-price">Price range (₦)</label><input id="min-price" name="min_price" value="{{ min_price }}" inputmode="decimal" placeholder="Min"><div style="height:8px"></div><input name="max_price" value="{{ max_price }}" inputmode="decimal" placeholder="Max"></div>
+    <div class="f-group" style="margin-bottom:16px"><label for="bedrooms">Bedrooms</label><select id="bedrooms" name="bedrooms"><option value="">Any bedrooms</option><option value="1" {% if bedrooms == '1' %}selected{% endif %}>1+</option><option value="2" {% if bedrooms == '2' %}selected{% endif %}>2+</option><option value="3" {% if bedrooms == '3' %}selected{% endif %}>3+</option><option value="4" {% if bedrooms == '4' %}selected{% endif %}>4+</option></select></div>
+    <div class="f-group" style="margin-bottom:16px"><label for="location">Location</label><input id="location" name="location" value="{{ location }}" placeholder="Area, locality or state"></div>
+    <div class="f-group" style="margin-bottom:16px"><label for="property-type">Property type</label><select id="property-type" name="property_type"><option value="">Any type</option><option value="flat" {% if property_type == 'Flat / Apartment' %}selected{% endif %}>Flat / Apartment</option><option value="duplex" {% if property_type == 'Duplex' %}selected{% endif %}>Duplex</option><option value="bungalow" {% if property_type == 'Bungalow' %}selected{% endif %}>Bungalow</option><option value="land" {% if property_type == 'Land' %}selected{% endif %}>Land</option><option value="commercial" {% if property_type == 'Commercial' %}selected{% endif %}>Commercial</option></select></div>
+    <button class="btn btn-lagoon" style="width:100%;justify-content:center" type="submit">Apply Filters</button>
+    {% if purpose or location or property_type or min_price or max_price or bedrooms %}<a class="btn btn-line" style="width:100%;justify-content:center;margin-top:8px" href="{{ url_for('browse') }}">Clear Filters</a>{% endif %}
+  </form>
+  <div style="flex:1">
+    <div style="display:flex;justify-content:space-between;margin-bottom:16px;align-items:center">
+      <span style="font-size:13px;color:#5B6660">{{ properties|length }} verified result{% if properties|length != 1 %}s{% endif %}</span>
+      <select name="sort" form="browse-sort" onchange="this.form.submit()" style="border:1px solid var(--line);padding:7px 10px;font-size:12.5px;border-radius:3px"><option value="newest" {% if sort == 'newest' %}selected{% endif %}>Sort: Newest</option><option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>Price: Low to High</option><option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>Price: High to Low</option></select>
+    </div>
+    <form id="browse-sort" method="get" action="{{ url_for('browse') }}"><input type="hidden" name="purpose" value="{{ purpose }}"><input type="hidden" name="location" value="{{ location }}"><input type="hidden" name="property_type" value="{{ property_type }}"><input type="hidden" name="min_price" value="{{ min_price }}"><input type="hidden" name="max_price" value="{{ max_price }}"><input type="hidden" name="bedrooms" value="{{ bedrooms }}"></form>
+    <div class="grid grid-3">{% for property in properties %}<a class="card" href="{{ url_for('propertydetail', property_id=property.id) }}">
+    <div class="pcard-img">{% if property.images %}<img class="pcard-photo" src="{{ property.images[0].image_url }}" alt="{{ property.title }}">{% endif %}<div class="tickets"><span class="ticket ticket-{{ 'sale' if property.purpose == 'sale' else 'rent' }}">{{ 'For Sale' if property.purpose == 'sale' else 'To Let' }}</span>{% if property.status == 'verified' %}<span class="ticket ticket-verified">Verified</span>{% endif %}</div></div>
+    <div class="pcard-body"><div class="pcard-price">₦{{ '{:,.0f}'.format(property.price) }}{% if property.price_period %}<span> / {{ property.price_period }}</span>{% endif %}</div><div class="pcard-title">{{ property.title }}</div><div class="pcard-loc">📍 {{ property.locality or property.area }}, {{ property.state }}</div><div class="pcard-meta"><span>{{ property.bedrooms }} Beds</span><span>{{ property.bathrooms }} Baths</span>{% if property.size_sqm %}<span>{{ '{:,.0f}'.format(property.size_sqm) }} sqm</span>{% endif %}</div></div>
+  </a>{% else %}<div class="empty" style="grid-column:1/-1"><div class="mark">⌂</div><p>No verified homes match these filters.</p><a class="btn btn-line btn-sm" style="margin-top:12px" href="{{ url_for('browse') }}">Start over</a></div>{% endfor %}</div>
+  </div>
+</div>
+<div class="footer">
+    <div class="cols">
+      <div style="max-width:220px"><div class="brand" style="color:var(--sand);font-family:var(--font-display);font-size:18px;margin-bottom:8px">Celtine Properties</div>Verified listings across Lagos, Abuja & Port Harcourt — for buyers, renters and the agents who serve them.</div>
+      <div><h4>Explore</h4><a href="{{ url_for('browse') }}">Buy a Home</a><br><a href="{{ url_for('browse') }}">Rent a Home</a><br><a href="{{ url_for('browse') }}">Land & Plots</a><br><a href="{{ url_for('agentprofile') }}">Verified Agents</a></div>
+      <div><h4>Company</h4><a href="{{ url_for('about') }}">About Us</a><br>Careers<br><a href="{{ url_for('contact') }}">Contact</a><br>Terms & Privacy</div>
+      <div><h4>List With Us</h4><a href="{{ url_for('postproperty') }}">Post a Property</a><br><a href="{{ url_for('subscriptionplans') }}">Agent Plans</a><br><a href="{{ url_for('home') }}">Site Map</a></div>
+    </div>
+    <div class="bottom"><span>© 2026 Celtine Properties Ltd.</span><span>Lagos, Nigeria</span></div>
+  </div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+</body>
+</html>

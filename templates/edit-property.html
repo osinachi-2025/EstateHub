@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Edit Property - Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,0,144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="page-shell"><div class="dash">
+  <aside class="dash-side">
+    <button class="dash-toggle" type="button" aria-label="Toggle dashboard navigation">☰</button>
+    <a class="dash-item" href="{{ url_for('posterdashboard') }}">Overview</a>
+    <a class="dash-item" href="{{ url_for('postproperty') }}">Post New Property</a>
+    <a class="dash-item on" href="{{ url_for('mylistings') }}">My Listings</a>
+    <a class="dash-item" href="{{ url_for('leads') }}">Leads &amp; Inquiries</a>
+    <a class="dash-item" href="{{ url_for('postermessages') }}">Messages</a>
+    <a class="dash-item" href="{{ url_for('posterprofile') }}">Profile &amp; Settings</a>
+    <a class="dash-item" href="{{ url_for('subscriptionplans') }}">Subscription Plan</a>
+    <a class="sitemap-link" href="{{ url_for('logout') }}" onclick="localStorage.removeItem('access_token')">Log out</a>
+  </aside>
+  <main class="dash-main">
+    <div class="dash-head"><div><div class="eyebrow">My Listings</div><h2 class="h">Edit Property</h2></div><a class="btn btn-line btn-sm" href="{{ url_for('mylistings') }}">Back to Listings</a></div>
+    {% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="f-hint" style="color:var(--{{ 'palm' if category == 'success' else 'danger' }});margin-bottom:12px">{{ message }}</div>{% endfor %}{% endwith %}
+    <form class="form-panel" method="post">
+      <div class="f-group" style="margin-bottom:16px"><label for="title">Listing Title</label><input id="title" name="title" value="{{ property.title }}" required></div>
+      <div class="f-row">
+        <div class="f-group"><label for="purpose">Purpose</label><select id="purpose" name="purpose"><option value="rent" {% if property.purpose == 'rent' %}selected{% endif %}>For Rent</option><option value="sale" {% if property.purpose == 'sale' %}selected{% endif %}>For Sale</option><option value="shortlet" {% if property.purpose == 'shortlet' %}selected{% endif %}>Shortlet</option></select></div>
+        <div class="f-group"><label for="state">State</label><input id="state" name="state" value="{{ property.state or '' }}" required></div>
+      </div>
+      <div class="f-row">
+        <div class="f-group"><label for="area">Area</label><input id="area" name="area" value="{{ property.area or '' }}" required></div>
+        <div class="f-group"><label for="locality">Locality</label><input id="locality" name="locality" value="{{ property.locality or '' }}" required></div>
+      </div>
+      <div class="f-row">
+        <div class="f-group"><label for="street_address">Street Address</label><input id="street_address" name="street_address" value="{{ property.street_address or '' }}"></div>
+        <div class="f-group"><label for="landmark">Landmark</label><input id="landmark" name="landmark" value="{{ property.landmark or '' }}"></div>
+      </div>
+      <div class="f-row">
+        <div class="f-group"><label for="property_type">Property Type</label><input id="property_type" name="property_type" value="{{ property.property_type or '' }}" required></div>
+        <div class="f-group"><label for="price">Price (NGN)</label><input id="price" name="price" type="number" min="1" step="0.01" value="{{ property.price }}" required></div>
+      </div>
+      <div class="f-row">
+        <div class="f-group"><label for="price_period">Price Period</label><input id="price_period" name="price_period" value="{{ property.price_period or '' }}" placeholder="year, month, or leave blank"></div>
+        <div class="f-group"><label for="size_sqm">Size (sqm)</label><input id="size_sqm" name="size_sqm" type="number" min="0" step="0.01" value="{{ property.size_sqm or '' }}"></div>
+      </div>
+      <div class="f-row">
+        <div class="f-group"><label for="bedrooms">Bedrooms</label><input id="bedrooms" name="bedrooms" type="number" min="0" value="{{ property.bedrooms or 0 }}"></div>
+        <div class="f-group"><label for="bathrooms">Bathrooms</label><input id="bathrooms" name="bathrooms" type="number" min="0" value="{{ property.bathrooms or 0 }}"></div>
+      </div>
+      <div class="f-group" style="margin-bottom:16px"><label for="parking_spaces">Parking Spaces</label><input id="parking_spaces" name="parking_spaces" type="number" min="0" value="{{ property.parking_spaces or 0 }}"></div>
+      <div class="f-group" style="margin-bottom:16px"><label>Amenities</label><div class="chip-row">{% for amenity in amenity_fields %}{% set field = 'has_' + amenity %}<label class="chip{% if property|attr(field) %} on{% endif %}"><input type="checkbox" name="amenities" value="{{ amenity }}" {% if property|attr(field) %}checked{% endif %} hidden>{{ amenity.replace('_', ' ').title() }}</label>{% endfor %}</div></div>
+      <div class="f-group" style="margin-bottom:16px"><label for="description">Description</label><textarea id="description" name="description">{{ property.description or '' }}</textarea></div>
+      <div style="display:flex;justify-content:space-between;gap:10px"><a class="btn btn-line" href="{{ url_for('mylistings') }}">Cancel</a><button class="btn btn-clay" type="submit">Save Changes</button></div>
+    </form>
+    <section class="form-panel" style="margin-top:18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px"><h3 class="h" style="font-size:19px">Property Images</h3><span class="f-hint">{{ property.images|length }} uploaded</span></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px">
+        {% for image in property.images %}<div style="border:1px solid var(--line);background:var(--sand);padding:6px"><img src="{{ image.image_url }}" alt="{{ property.title }} image {{ loop.index }}" style="width:100%;height:110px;object-fit:cover;display:block"><form method="post" action="{{ url_for('delete_property_image', property_id=property.id, image_id=image.id) }}" style="margin-top:6px" onsubmit="return confirm('Delete this property image?')"><button class="btn btn-line btn-sm" style="width:100%;justify-content:center;color:var(--danger)" type="submit">Delete Image</button></form></div>{% else %}<p class="f-hint">No images uploaded for this property.</p>{% endfor %}
+      </div>
+    </section>
+  </main>
+</div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+</body>
+</html>

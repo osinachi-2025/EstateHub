@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Property Detail — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell">
+<div class="topbar">
+    <a class="brand" href="/"><div class="mk">C</div>Celtine</a>
+    <nav><a class="" href="/">Home</a><a class="on" href="/browse">Buy / Rent</a><a class="" href="/about">About</a><a class="" href="/contact">Contact</a></nav>
+    <div class="actions">{% if current_user %}<a class="btn btn-line btn-sm" href="{{ url_for('posterdashboard') if current_user.role == 'agent' else url_for('customerdashboard') }}">Dashboard</a><a class="btn btn-clay btn-sm" href="{{ url_for('logout') }}">Log out</a>{% else %}<a class="btn btn-line btn-sm" href="{{ url_for('login') }}">Log in</a><a class="btn btn-clay btn-sm" href="{{ url_for('postproperty') }}">List a Property</a>{% endif %}</div>
+  </div>
+<div class="section-tight">
+  <div style="display:flex;gap:6px;margin-bottom:16px"><span class="ticket ticket-{{ 'sale' if property.purpose == 'sale' else 'rent' }}">{{ 'For Sale' if property.purpose == 'sale' else 'To Let' }}</span>{% if property.status == 'verified' %}<span class="ticket ticket-verified">Verified</span>{% endif %}</div>
+  <div style="display:grid;grid-template-columns:2fr 1fr;gap:30px">
+    <div>
+      {% set cover_image = property.images|selectattr('is_cover_photo')|list|first or (property.images|list|first) %}<div class="property-gallery-main" style="height:340px;background:linear-gradient(135deg,var(--palm),var(--lagoon));border-radius:4px;margin-bottom:14px;overflow:hidden;cursor:pointer">{% if cover_image %}<img id="propertyMainImage" src="{{ cover_image.image_url }}" alt="{{ property.title }}" style="width:100%;height:100%;object-fit:cover;display:block;cursor:pointer">{% endif %}</div>
+      <div class="property-gallery-thumbs" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:26px">
+        {% for image in property.images|sort(attribute='is_cover_photo', reverse=true) %}<button type="button" class="property-thumb{% if loop.first %} active{% endif %}" data-image-url="{{ image.image_url }}" style="height:70px;padding:0;border:2px solid {% if loop.first %}var(--clay){% else %}transparent{% endif %};background:var(--sand-2);border-radius:3px;overflow:hidden"><img src="{{ image.image_url }}" alt="{{ property.title }} photo {{ loop.index }}" style="width:100%;height:100%;object-fit:cover;display:block"></button>{% else %}<div style="height:70px;background:#E9DFC9;border-radius:3px;grid-column:1/-1"></div>{% endfor %}
+      </div>
+      <h1 class="hero-h" style="font-size:28px">{{ property.title }}</h1>
+      <p class="lede">📍 {{ property.locality or property.area }}, {{ property.state }}</p>
+      <div style="display:flex;gap:26px;margin:20px 0;font-family:var(--font-mono);font-size:13px">
+        <div><b>{{ property.bedrooms }}</b> Beds</div><div><b>{{ property.bathrooms }}</b> Baths</div>{% if property.size_sqm %}<div><b>{{ '{:,.0f}'.format(property.size_sqm) }}</b> sqm</div>{% endif %}<div><b>{{ property.parking_spaces }}</b> Parking</div>
+      </div>
+      <h3 class="h" style="margin-bottom:8px">Description</h3>
+      <p class="lede" style="max-width:100%">{{ property.description or 'No description has been provided for this property.' }}</p>
+      <h3 class="h" style="margin:22px 0 10px">Amenities</h3>
+      <div class="chip-row">{% for amenity in amenities %}<span class="chip">{{ amenity }}</span>{% else %}<span class="lede">No amenities listed.</span>{% endfor %}</div>
+    </div>
+    <div>
+      <div class="card" style="padding:20px;margin-bottom:16px">
+        <div class="pcard-price" style="font-size:22px">₦{{ '{:,.0f}'.format(property.price) }}{% if property.price_period %}<span> / {{ property.price_period }}</span>{% endif %}</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">
+          <a class="btn btn-clay" style="justify-content:center" href="{{ url_for('scheduleviewing') }}?property_id={{ property.id }}">Schedule a Viewing</a>
+          {% if current_user and current_user.role == 'customer' %}<a class="btn btn-ghost" style="justify-content:center" href="{{ url_for('customermessages') }}?agent_id={{ property.agent.id }}&property_id={{ property.id }}">Message Agent</a><form method="post" action="{{ url_for('save_property', property_id=property.id) }}"><button class="btn btn-line" style="width:100%;justify-content:center" type="submit">{{ '★ Saved Property' if is_saved else '☆ Save Property' }}</button></form>{% else %}<a class="btn btn-ghost" style="justify-content:center" href="{{ url_for('login', next=url_for('propertydetail', property_id=property.id)) }}">Log in to message or save</a>{% endif %}
+        </div>
+      </div>
+      <a class="card" style="padding:18px;display:block" href="{{ url_for('agentprofile', agent_id=property.agent.id) }}">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="stat" style="width:42px;height:42px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--gold);color:var(--white);font-weight:700">{{ property.agent.full_name[:2]|upper }}</div>
+          <div><div style="font-weight:600;font-size:13.5px">{{ property.agent.full_name }}</div><div style="font-size:11.5px;color:#8B9590">{{ property.agent.agency_name or ('Verified Agent' if property.agent.is_verified else 'Independent Agent') }} · {{ property.agent.properties|length }} listings</div></div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+<div id="imageLightbox" hidden style="position:fixed;inset:0;z-index:1000;background:rgba(12,22,20,.94);align-items:center;justify-content:center;padding:24px;cursor:zoom-out">
+  <button id="closeLightbox" type="button" aria-label="Close fullscreen image" style="position:absolute;top:18px;right:22px;background:transparent;border:1px solid rgba(255,253,248,.5);color:var(--white);font-size:28px;line-height:1;padding:3px 11px;cursor:pointer">&times;</button>
+  <img id="lightboxImage" alt="" style="max-width:94vw;max-height:90vh;object-fit:contain;display:block;cursor:default">
+</div>
+<div class="footer">
+    <div class="cols">
+      <div style="max-width:220px"><div class="brand" style="color:var(--sand);font-family:var(--font-display);font-size:18px;margin-bottom:8px">Celtine Properties</div>Verified listings across Lagos, Abuja & Port Harcourt — for buyers, renters and the agents who serve them.</div>
+      <div><h4>Explore</h4><a href="/browse">Buy a Home</a><br><a href="/browse">Rent a Home</a><br><a href="/browse">Land & Plots</a><br><a href="/agent-profile">Verified Agents</a></div>
+      <div><h4>Company</h4><a href="/about">About Us</a><br>Careers<br><a href="/contact">Contact</a><br>Terms & Privacy</div>
+      <div><h4>List With Us</h4><a href="/post-property">Post a Property</a><br><a href="/subscription-plans">Agent Plans</a><br><a href="/index">Site Map</a></div>
+    </div>
+    <div class="bottom"><span>© 2026 Celtine Properties Ltd.</span><span>Lagos, Nigeria</span></div>
+  </div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+</body>
+</html>

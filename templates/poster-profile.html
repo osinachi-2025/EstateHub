@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Profile & Settings — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell"><div class="dash">
+    <div class="dash-side">
+      <button class="dash-toggle" type="button" aria-label="Toggle dashboard navigation">☰</button>
+      <a class="dash-item " href="poster-dashboard.html">Overview</a><a class="dash-item " href="post-property.html">Post New Property</a><a class="dash-item " href="my-listings.html">My Listings</a><a class="dash-item " href="leads.html">Leads & Inquiries</a><a class="dash-item " href="poster-messages.html">Messages</a><a class="dash-item on" href="poster-profile.html">Profile & Settings</a><a class="dash-item " href="subscription-plans.html">Subscription Plan</a>
+      <a class="sitemap-link" href="{{ url_for('logout') }}" onclick="localStorage.removeItem('access_token')">↪ Log out</a>
+    </div>
+    <div class="dash-main">
+<div class="dash-head"><h2 class="h">Profile & Settings</h2></div>
+{% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="f-hint" style="color:var(--{{ 'palm' if category == 'success' else 'danger' }});margin-bottom:12px">{{ message }}</div>{% endfor %}{% endwith %}
+<form class="form-panel" style="max-width:560px" method="post">
+  <div class="f-row"><div class="f-group"><label>Full Name</label><input name="full_name" value="{{ agent.full_name }}" required></div><div class="f-group"><label>Agency Name</label><input name="agency_name" value="{{ agent.agency_name or '' }}"></div></div>
+  <div class="f-row"><div class="f-group"><label>Phone</label><input name="phone" value="{{ agent.phone or '' }}"></div><div class="f-group"><label>Email</label><input value="{{ agent.email }}" readonly></div></div>
+  <div class="f-group" style="margin-bottom:16px"><label>Bio</label><textarea name="bio">{{ agent.bio or '' }}</textarea></div>
+  <div class="f-group" style="margin-bottom:16px"><label>Verification Documents</label><div class="badge-pill pill-{{ 'ok' if agent.is_verified else 'warn' }}">{{ 'Verified' if agent.is_verified else 'Pending verification' }}</div></div>
+  <button class="btn btn-clay" type="submit">Save Changes</button>
+</form>
+</div>
+</div>
+  </div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+</body>
+</html>

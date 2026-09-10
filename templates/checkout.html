@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Checkout / Payment — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell"><div class="dash">
+    <div class="dash-side">
+      <button class="dash-toggle" type="button" aria-label="Toggle dashboard navigation">☰</button>
+      <a class="dash-item " href="customer-dashboard.html">Overview</a><a class="dash-item " href="saved-properties.html">Saved Properties</a><a class="dash-item " href="schedule-viewing.html">My Viewings</a><a class="dash-item " href="customer-messages.html">Messages</a><a class="dash-item on" href="checkout.html">Payments</a><a class="dash-item " href="reviews.html">My Reviews</a>
+    </div>
+    <div class="dash-main">
+<div class="dash-head"><h2 class="h">Checkout — Booking Deposit</h2></div>
+<div style="display:grid;grid-template-columns:1.3fr 1fr;gap:24px">
+  <div class="form-panel">
+    <h3 class="h" style="margin-bottom:14px;font-size:16px">Payment Method</h3>
+    <div class="chip-row" style="margin-bottom:18px"><span class="chip on">💳 Card</span><span class="chip">🏦 Bank Transfer</span><span class="chip">📱 USSD</span></div>
+    <div class="f-group" style="margin-bottom:14px"><label>Card Number</label><input placeholder="4242 4242 4242 4242"></div>
+    <div class="f-row"><div class="f-group"><label>Expiry</label><input placeholder="MM/YY"></div><div class="f-group"><label>CVV</label><input placeholder="***"></div></div>
+    <a class="btn btn-clay" style="margin-top:8px">Pay ₦150,000 Deposit</a>
+  </div>
+  <div class="card" style="padding:20px;height:fit-content">
+    <h3 class="h" style="font-size:15px;margin-bottom:12px">Order Summary</h3>
+    {% for transaction in transactions %}<div style="font-size:13px;display:flex;justify-content:space-between;margin-bottom:8px"><span>{{ transaction.purpose|replace('_', ' ')|title }}</span><span>₦{{ '{:,.0f}'.format(transaction.amount) }}</span></div>{% else %}<div class="empty">No payment transactions yet.</div>{% endfor %}
+  </div>
+</div>
+</div>
+  </div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+</body>
+</html>

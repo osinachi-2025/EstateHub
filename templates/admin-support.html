@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Support Tickets — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell"><div class="dash">
+    <div class="dash-side">
+      <button class="dash-toggle" type="button" aria-label="Toggle dashboard navigation">☰</button>
+      <a class="dash-item " href="admin-dashboard.html">Overview</a><a class="dash-item " href="admin-users.html">Manage Users</a><a class="dash-item " href="admin-listings.html">Manage Listings</a><a class="dash-item " href="admin-transactions.html">Transactions</a><a class="dash-item " href="admin-reports.html">Reports & Analytics</a><a class="dash-item " href="admin-settings.html">Site Settings</a><a class="dash-item on" href="admin-support.html">Support Tickets</a>
+    </div>
+    <div class="dash-main">
+<div class="dash-head"><h2 class="h">Support Tickets</h2></div>
+<table><tr><th>Ticket</th><th>User</th><th>Priority</th><th>Status</th><th></th></tr>
+{% for ticket in tickets %}<tr><td>{{ ticket.subject }}</td><td>{{ ticket.user.full_name }}</td><td><span class="badge-pill pill-{{ 'danger' if ticket.priority == 'urgent' else 'warn' if ticket.priority == 'medium' else 'neutral' }}">{{ ticket.priority|title }}</span></td><td>{{ ticket.status|title }}</td><td>{{ ticket.created_at.strftime('%Y-%m-%d') }}</td></tr>{% else %}<tr><td colspan="5">No support tickets found.</td></tr>{% endfor %}
+</table>
+</div>
+  </div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+</body>
+</html>

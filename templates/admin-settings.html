@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Site Settings — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell"><div class="dash">
+    <div class="dash-side">
+      <button class="dash-toggle" type="button" aria-label="Toggle dashboard navigation">☰</button>
+      <a class="dash-item " href="admin-dashboard.html">Overview</a><a class="dash-item " href="admin-users.html">Manage Users</a><a class="dash-item " href="admin-listings.html">Manage Listings</a><a class="dash-item " href="admin-transactions.html">Transactions</a><a class="dash-item " href="admin-reports.html">Reports & Analytics</a><a class="dash-item on" href="admin-settings.html">Site Settings</a><a class="dash-item " href="admin-support.html">Support Tickets</a>
+    </div>
+    <div class="dash-main">
+<div class="dash-head"><h2 class="h">Site Settings</h2></div>
+<div class="grid grid-2">
+  <div class="form-panel"><h3 class="h" style="font-size:15px;margin-bottom:12px">General</h3>
+    <div class="f-group" style="margin-bottom:14px"><label>Site Name</label><input value="Celtine Properties"></div>
+    <div class="f-group" style="margin-bottom:14px"><label>Support Email</label><input value="support@celtineproperties.ng"></div>
+    <div class="f-group"><label>Commission Rate (%)</label><input value="2.5"></div>
+  </div>
+  <div class="form-panel"><h3 class="h" style="font-size:15px;margin-bottom:12px">Categories & Locations</h3>
+    <div class="f-group" style="margin-bottom:14px"><label>Active States</label><div class="chip-row">{% for state in states %}<span class="chip on">{{ state }}</span>{% else %}<span class="f-hint">No states configured through listings.</span>{% endfor %}</div></div>
+    <div class="f-group"><label>Property Types</label><div class="chip-row">{% for property_type in property_types %}<span class="chip on">{{ property_type }}</span>{% else %}<span class="f-hint">No property types configured.</span>{% endfor %}</div></div>
+  </div>
+</div>
+<a class="btn btn-clay" style="margin-top:18px">Save Settings</a>
+</div>
+  </div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+</body>
+</html>

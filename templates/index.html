@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sitemap — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+
+<div style="display:flex;min-height:100vh">
+  <div id="nav"><button class="navtoggle" id="navToggleBtn">
+      <div class="brandmark" style="margin-bottom:0"><div class="mark">C</div><div class="word">Celtine <b>Properties</b></div></div>
+      <span class="chevron" id="navChevron">Menu ▾</span>
+    </button>
+    <div class="navnote">Sitemap · 29 pages</div><div class="navgroup"><div class="navgroup-title">Customer — Public</div><a class="navitem" href="home.html"><span class="dot"></span>Home</a><a class="navitem" href="browse.html"><span class="dot"></span>Browse Listings</a><a class="navitem" href="property-detail.html"><span class="dot"></span>Property Detail</a><a class="navitem" href="agent-profile.html"><span class="dot"></span>Agent Public Profile</a><a class="navitem" href="about.html"><span class="dot"></span>About Us</a><a class="navitem" href="contact.html"><span class="dot"></span>Contact Us</a><a class="navitem" href="login.html"><span class="dot"></span>Login</a><a class="navitem" href="signup.html"><span class="dot"></span>Sign Up</a></div><div class="navgroup"><div class="navgroup-title">Customer — Account</div><a class="navitem" href="customer-dashboard.html"><span class="dot"></span>Customer Dashboard</a><a class="navitem" href="saved-properties.html"><span class="dot"></span>Saved Properties</a><a class="navitem" href="schedule-viewing.html"><span class="dot"></span>Schedule a Viewing</a><a class="navitem" href="customer-messages.html"><span class="dot"></span>Messages / Inbox</a><a class="navitem" href="checkout.html"><span class="dot"></span>Checkout / Payment</a><a class="navitem" href="reviews.html"><span class="dot"></span>Reviews & Ratings</a></div><div class="navgroup"><div class="navgroup-title">Poster (Agent / Landlord)</div><a class="navitem" href="poster-dashboard.html"><span class="dot"></span>Poster Dashboard</a><a class="navitem" href="post-property.html"><span class="dot"></span>Post New Property</a><a class="navitem" href="my-listings.html"><span class="dot"></span>My Listings</a><a class="navitem" href="leads.html"><span class="dot"></span>Leads & Inquiries</a><a class="navitem" href="poster-messages.html"><span class="dot"></span>Messages</a><a class="navitem" href="poster-profile.html"><span class="dot"></span>Profile & Settings</a><a class="navitem" href="subscription-plans.html"><span class="dot"></span>Subscription Plans</a></div><div class="navgroup"><div class="navgroup-title">Admin</div><a class="navitem" href="admin-dashboard.html"><span class="dot"></span>Admin Dashboard</a><a class="navitem" href="admin-users.html"><span class="dot"></span>Manage Users</a><a class="navitem" href="admin-listings.html"><span class="dot"></span>Manage Listings</a><a class="navitem" href="admin-transactions.html"><span class="dot"></span>Transactions & Payments</a><a class="navitem" href="admin-reports.html"><span class="dot"></span>Reports & Analytics</a><a class="navitem" href="admin-settings.html"><span class="dot"></span>Site Settings</a><a class="navitem" href="admin-support.html"><span class="dot"></span>Support Tickets</a></div><div class="navgroup"><div class="navgroup-title">System</div><a class="navitem" href="404.html"><span class="dot"></span>404 — Not Found</a></div></div>
+  <div style="flex:1;background:var(--white);padding:44px 46px">
+    <div class="eyebrow">Prototype Directory</div>
+    <h1 class="hero-h" style="font-size:32px">Every page of Celtine Properties, separated into its own file.</h1>
+    <p class="lede" style="max-width:640px">This project is now a real multi-page site: one HTML file per screen, sharing <code>css/style.css</code> and <code>js/interactions.js</code>. Pick a page from the sitemap on the left, or jump in from <a href="home.html" style="color:var(--clay);font-weight:600">the homepage</a>.</p>
+  </div>
+</div>
+<script>
+document.getElementById('navToggleBtn').addEventListener('click',()=>{
+  const el=document.getElementById('nav');
+  el.classList.toggle('collapsed');
+  document.getElementById('navChevron').textContent = el.classList.contains('collapsed') ? 'Menu ▾' : 'Close ▴';
+});
+if(window.innerWidth<=760){ document.getElementById('nav').classList.add('collapsed'); }
+</script>
+
+<script src="js/interactions.js"></script>
+</body>
+</html>

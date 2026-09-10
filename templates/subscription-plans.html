@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Subscription Plans — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell"><div class="dash">
+    <div class="dash-side">
+      <button class="dash-toggle" type="button" aria-label="Toggle dashboard navigation">☰</button>
+      <a class="dash-item " href="poster-dashboard.html">Overview</a><a class="dash-item " href="post-property.html">Post New Property</a><a class="dash-item " href="my-listings.html">My Listings</a><a class="dash-item " href="leads.html">Leads & Inquiries</a><a class="dash-item " href="poster-messages.html">Messages</a><a class="dash-item " href="poster-profile.html">Profile & Settings</a><a class="dash-item on" href="subscription-plans.html">Subscription Plan</a>
+      <a class="sitemap-link" href="{{ url_for('logout') }}" onclick="localStorage.removeItem('access_token')">↪ Log out</a>
+    </div>
+    <div class="dash-main">
+<div class="dash-head"><div><h2 class="h">Subscription Plans</h2>{% if current_plan %}<div class="f-hint">Current plan: {{ current_plan.name }}{% if agent.subscription.end_date %} · ends {{ agent.subscription.end_date }}{% endif %}</div>{% endif %}</div></div>
+<div class="grid grid-3">{% for plan in plans %}<div class="plan-card{% if current_plan and current_plan.id == plan.id %} reco{% endif %}"><h3 class="h" style="font-size:16px">{{ plan.name }}</h3><div class="plan-price">{{ 'Free' if plan.price == 0 else '₦{:,.0f}'.format(plan.price) }}</div><ul class="plan-feats"><li>Up to {{ plan.max_listings if plan.max_listings else 'unlimited' }} active listings</li></ul><a class="btn btn-{{ 'clay' if not current_plan or current_plan.id != plan.id else 'line' }}" style="width:100%;justify-content:center;margin-top:14px">{{ 'Current Plan' if current_plan and current_plan.id == plan.id else 'Choose Plan' }}</a></div>{% else %}<p>No subscription plans are configured.</p>{% endfor %}</div>
+</div>
+  </div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+</body>
+</html>

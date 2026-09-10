@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Messages — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell"><div class="dash">
+    <div class="dash-side">
+      <button class="dash-toggle" type="button" aria-label="Toggle dashboard navigation">☰</button>
+      <a class="dash-item " href="poster-dashboard.html">Overview</a><a class="dash-item " href="post-property.html">Post New Property</a><a class="dash-item " href="my-listings.html">My Listings</a><a class="dash-item " href="leads.html">Leads & Inquiries</a><a class="dash-item on" href="poster-messages.html">Messages</a><a class="dash-item " href="poster-profile.html">Profile & Settings</a><a class="dash-item " href="subscription-plans.html">Subscription Plan</a>
+      <a class="sitemap-link" href="{{ url_for('logout') }}" onclick="localStorage.removeItem('access_token')">↪ Log out</a>
+    </div>
+    <div class="dash-main"><div class="dash-head"><h2 class="h">Messages</h2></div><div class="chat-shell">
+    <div class="chat-list">{% for message in messages %}<a class="chat-list-item{% if loop.first %} on{% endif %}" href="{{ url_for('postermessages', customer_id=message.sender_id if message.sender_id != agent.id else message.receiver_id, property_id=message.property_id) }}"><div class="nm">{{ message.sender.full_name if message.sender_id != agent.id else message.receiver.full_name }}</div><div class="pv">{{ message.property.title if message.property else 'General conversation' }}</div></a>{% else %}<div class="chat-list-item"><div class="nm">No conversations</div><div class="pv">Messages will appear here.</div></div>{% endfor %}</div>
+    <div class="chat-main">
+      <div class="chat-head">{{ messages[0].sender.full_name if messages and messages[0].sender_id != agent.id else messages[0].receiver.full_name if messages else 'Messages' }}{% if conversation_property %}<span class="chat-property"> · {{ conversation_property.title }}</span>{% endif %}</div>
+      <div class="chat-body">
+        {% for message in messages %}<div class="bubble {{ 'me' if message.sender_id == agent.id else 'them' }}">{{ message.content }}</div>{% else %}<div class="bubble them">No messages yet.</div>{% endfor %}
+      </div>
+      <form class="chat-input" method="post" action="{{ url_for('send_message') }}"><select name="receiver_id" required style="border:1px solid var(--line);padding:8px;max-width:180px"><option value="">Choose customer</option>{% for customer in customers %}<option value="{{ customer.id }}" {% if selected_customer_id == customer.id %}selected{% endif %}>{{ customer.full_name }}</option>{% endfor %}</select><input name="content" required placeholder="Type a message..."><input type="hidden" name="property_id" value="{{ selected_property_id or '' }}"><button class="btn btn-clay btn-sm" type="submit">Send</button></form>
+    </div>
+  </div></div>
+  </div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+</body>
+</html>

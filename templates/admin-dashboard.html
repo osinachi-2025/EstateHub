@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell"><div class="dash">
+    <div class="dash-side">
+      <button class="dash-toggle" type="button" aria-label="Toggle dashboard navigation">☰</button>
+      <a class="dash-item on" href="admin-dashboard.html">Overview</a><a class="dash-item " href="admin-users.html">Manage Users</a><a class="dash-item " href="admin-listings.html">Manage Listings</a><a class="dash-item " href="admin-transactions.html">Transactions</a><a class="dash-item " href="admin-reports.html">Reports & Analytics</a><a class="dash-item " href="admin-settings.html">Site Settings</a><a class="dash-item " href="admin-support.html">Support Tickets</a>
+      <button id="logout-button" class="dash-item" type="button" style="width:100%;border:0;background:transparent;color:#D9E4DE;text-align:left">Log out</button>
+    </div>
+    <div class="dash-main">
+<div class="dash-head"><div><div class="eyebrow">Platform Overview</div><h2 class="h">Admin Dashboard</h2></div></div>
+<div class="grid grid-4" style="margin-bottom:26px">
+  <div class="stat"><div class="lbl">Total Users</div><div class="val">{{ users_count }}</div></div>
+  <div class="stat"><div class="lbl">Live Listings</div><div class="val">{{ live_count }}</div></div>
+  <div class="stat"><div class="lbl">Pending Approval</div><div class="val">{{ pending_count }}</div><div class="sub down">Needs review</div></div>
+  <div class="stat"><div class="lbl">Revenue</div><div class="val">₦{{ '{:,.0f}'.format(revenue) }}</div></div>
+</div>
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:20px">
+  <div>
+    <h3 class="h" style="margin-bottom:12px">Listings Awaiting Review</h3>
+    <table><tr><th>Property</th><th>Poster</th><th>Submitted</th><th>Action</th></tr>
+    {% for property in pending_properties %}<tr><td>{{ property.title }}</td><td>{{ property.agent.full_name }}</td><td>{{ property.created_at.strftime('%Y-%m-%d') }}</td><td><a class="btn btn-sm btn-line" href="{{ url_for('adminlistings') }}">Review</a></td></tr>{% else %}<tr><td colspan="4">No listings awaiting review.</td></tr>{% endfor %}
+    </table>
+  </div>
+  <div>
+    <h3 class="h" style="margin-bottom:12px">Support Queue</h3>
+    {% for ticket in open_tickets %}<div class="card" style="padding:14px;margin-bottom:10px"><b style="font-size:13px">{{ ticket.subject }}</b><div style="font-size:11.5px;color:#8B9590">{{ ticket.user.full_name }} · {{ ticket.priority|title }}</div></div>{% else %}<div class="empty">No open support tickets.</div>{% endfor %}
+  </div>
+</div>
+</div>
+  </div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+<script>
+document.getElementById('logout-button').addEventListener('click', () => {
+  localStorage.removeItem('access_token');
+  window.location.href = '{{ url_for("login") }}';
+});
+</script>
+</body>
+</html>

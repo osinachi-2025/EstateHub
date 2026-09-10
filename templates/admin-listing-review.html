@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Review Listing - Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="page-shell"><div class="dash">
+  <aside class="dash-side">
+    <button class="dash-toggle" type="button" aria-label="Toggle dashboard navigation">☰</button>
+    <a class="dash-item" href="{{ url_for('admindashboard') }}">Overview</a>
+    <a class="dash-item" href="{{ url_for('adminusers') }}">Manage Users</a>
+    <a class="dash-item on" href="{{ url_for('adminlistings') }}">Manage Listings</a>
+    <a class="dash-item" href="{{ url_for('admintransactions') }}">Transactions</a>
+    <a class="dash-item" href="{{ url_for('adminreports') }}">Reports &amp; Analytics</a>
+    <a class="dash-item" href="{{ url_for('adminsettings') }}">Site Settings</a>
+    <a class="dash-item" href="{{ url_for('adminsupport') }}">Support Tickets</a>
+    <a class="sitemap-link" href="{{ url_for('logout') }}">Log out</a>
+  </aside>
+  <main class="dash-main">
+    <div class="dash-head"><div><div class="eyebrow">Listing Review</div><h2 class="h">{{ property.title }}</h2></div><a class="btn btn-line btn-sm" href="{{ url_for('adminlistings') }}">Back to Listings</a></div>
+    {% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="f-hint" style="color:var(--{{ 'palm' if category == 'success' else 'danger' }});margin-bottom:12px">{{ message }}</div>{% endfor %}{% endwith %}
+    <div class="grid grid-2">
+      <section class="form-panel">
+        <div style="height:270px;background:linear-gradient(135deg,var(--palm),var(--lagoon));overflow:hidden;margin-bottom:12px">{% if property.images %}<img src="{{ property.images[0].image_url }}" alt="{{ property.title }}" style="width:100%;height:100%;object-fit:cover;display:block">{% endif %}</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">{% for image in property.images %}<img src="{{ image.image_url }}" alt="{{ property.title }} image {{ loop.index }}" style="width:100%;height:70px;object-fit:cover;display:block">{% endfor %}</div>
+      </section>
+      <section class="form-panel">
+        <div style="display:flex;gap:8px;margin-bottom:14px"><span class="badge-pill pill-{{ 'ok' if property.status == 'verified' else 'warn' if property.status == 'pending' else 'danger' }}">{{ property.status }}</span><span class="badge-pill pill-neutral">{{ property.purpose|title }}</span></div>
+        <h3 class="h" style="font-size:20px;margin-bottom:8px">Property Content</h3>
+        <p class="lede" style="margin-top:0">{{ property.description or 'No description provided.' }}</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0;font-size:13px"><div><b>Price</b><br>₦{{ '{:,.0f}'.format(property.price) }}{% if property.price_period %} / {{ property.price_period }}{% endif %}</div><div><b>Type</b><br>{{ property.property_type }}</div><div><b>Location</b><br>{{ property.locality }}, {{ property.area }}, {{ property.state }}</div><div><b>Rooms</b><br>{{ property.bedrooms }} beds · {{ property.bathrooms }} baths</div><div><b>Size</b><br>{{ property.size_sqm or 'Not supplied' }} sqm</div><div><b>Parking</b><br>{{ property.parking_spaces }}</div></div>
+        <h3 class="h" style="font-size:16px;margin-bottom:8px">Amenities</h3><div class="chip-row">{% for amenity in amenities %}<span class="chip">{{ amenity }}</span>{% else %}<span class="f-hint">None listed.</span>{% endfor %}</div>
+        <div style="border-top:1px solid var(--line);margin-top:18px;padding-top:14px;font-size:13px"><b>Submitted by</b><br>{{ property.agent.full_name }} · {{ property.agent.email }}</div>
+      </section>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:18px"><form method="post" action="{{ url_for('approve_admin_listing', property_id=property.id) }}"><button class="btn btn-clay" type="submit">Approve Listing</button></form><form method="post" action="{{ url_for('delete_admin_listing', property_id=property.id) }}" onsubmit="return confirm('Delete this listing and its related records? This cannot be undone.')"><button class="btn btn-line" style="color:var(--danger)" type="submit">Delete Listing</button></form></div>
+  </main>
+</div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+</body>
+</html>

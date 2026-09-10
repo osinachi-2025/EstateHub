@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Listings — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell"><div class="dash">
+    <div class="dash-side">
+      <button class="dash-toggle" type="button" aria-label="Toggle dashboard navigation">☰</button>
+      <a class="dash-item " href="poster-dashboard.html">Overview</a><a class="dash-item " href="post-property.html">Post New Property</a><a class="dash-item on" href="my-listings.html">My Listings</a><a class="dash-item " href="leads.html">Leads & Inquiries</a><a class="dash-item " href="poster-messages.html">Messages</a><a class="dash-item " href="poster-profile.html">Profile & Settings</a><a class="dash-item " href="subscription-plans.html">Subscription Plan</a>
+      <a class="sitemap-link" href="{{ url_for('logout') }}" onclick="localStorage.removeItem('access_token')">↪ Log out</a>
+    </div>
+    <div class="dash-main">
+<div class="dash-head"><h2 class="h">My Listings ({{ listings|length }})</h2><a class="btn btn-clay btn-sm" href="{{ url_for('postproperty') }}">+ New</a></div>
+<table><tr><th>Property</th><th>Type</th><th>Status</th><th>Price</th><th></th></tr>
+{% for listing in listings %}<tr><td>{{ listing.title }}</td><td>{{ listing.purpose|title }}</td><td><span class="badge-pill pill-{{ 'ok' if listing.status == 'verified' else 'warn' if listing.status == 'pending' else 'danger' }}">{{ listing.status }}</span></td><td>₦{{ '{:,.0f}'.format(listing.price) }}</td><td><a class="btn btn-line btn-sm" href="{{ url_for('edit_property', property_id=listing.id) }}">Edit</a></td></tr>{% else %}<tr><td colspan="5">No listings yet.</td></tr>{% endfor %}
+</table>
+</div>
+  </div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+</body>
+</html>

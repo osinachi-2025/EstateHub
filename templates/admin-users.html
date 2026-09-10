@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Manage Users — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell"><div class="dash">
+    <div class="dash-side">
+      <button class="dash-toggle" type="button" aria-label="Toggle dashboard navigation">☰</button>
+      <a class="dash-item " href="admin-dashboard.html">Overview</a><a class="dash-item on" href="admin-users.html">Manage Users</a><a class="dash-item " href="admin-listings.html">Manage Listings</a><a class="dash-item " href="admin-transactions.html">Transactions</a><a class="dash-item " href="admin-reports.html">Reports & Analytics</a><a class="dash-item " href="admin-settings.html">Site Settings</a><a class="dash-item " href="admin-support.html">Support Tickets</a>
+    </div>
+    <div class="dash-main">
+<div class="dash-head"><h2 class="h">Manage Users</h2><div class="chip-row"><span class="chip on">All</span><span class="chip">Customers</span><span class="chip">Agents</span><span class="chip">Suspended</span></div></div>
+{% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="f-hint" style="color:var(--{{ 'palm' if category == 'success' else 'danger' }});margin-bottom:12px">{{ message }}</div>{% endfor %}{% endwith %}
+<table><tr><th>Name</th><th>Role</th><th>Joined</th><th>Status</th><th>Plan</th><th>Contact</th></tr>
+{% for user in users %}<tr><td>{{ user.full_name }}</td><td>{{ user.role|title }}</td><td>{{ user.created_at.strftime('%Y-%m-%d') }}</td><td><span class="badge-pill pill-{{ 'danger' if user.is_suspended else 'ok' }}">{{ 'Suspended' if user.is_suspended else 'Active' }}</span></td><td>{% if user.role == 'agent' %}<form method="post" action="{{ url_for('change_agent_subscription', user_id=user.id) }}" style="display:flex;gap:6px;align-items:center"><select name="plan_id" style="padding:5px;border:1px solid var(--line);font-size:11px">{% for plan in plans %}<option value="{{ plan.id }}" {% if user.subscription and user.subscription.plan_id == plan.id %}selected{% endif %}>{{ plan.name }}</option>{% endfor %}</select><button class="btn btn-sm btn-line" type="submit">Set 30d</button></form>{% else %}—{% endif %}</td><td>{{ user.email }}</td></tr>{% else %}<tr><td colspan="6">No users found.</td></tr>{% endfor %}
+</table>
+</div>
+  </div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+</body>
+</html>

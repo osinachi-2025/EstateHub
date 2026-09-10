@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>About Us — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell">
+<div class="topbar">
+    <a class="brand" href="home.html"><div class="mk">C</div>Celtine</a>
+    <nav><a class="" href="home.html">Home</a><a class="" href="browse.html">Buy / Rent</a><a class="on" href="about.html">About</a><a class="" href="contact.html">Contact</a></nav>
+    <div class="actions">{% if current_user %}<a class="btn btn-line btn-sm" href="{{ url_for('posterdashboard') if current_user.role == 'agent' else url_for('customerdashboard') }}">Dashboard</a><a class="btn btn-clay btn-sm" href="{{ url_for('logout') }}">Log out</a>{% else %}<a class="btn btn-line btn-sm" href="{{ url_for('login') }}">Log in</a><a class="btn btn-clay btn-sm" href="{{ url_for('postproperty') }}">List a Property</a>{% endif %}</div>
+  </div>
+<div class="section">
+  <div class="eyebrow">Our Story</div>
+  <h1 class="hero-h">Property in Nigeria shouldn't require an uncle who knows a guy.</h1>
+  <p class="lede">Celtine Properties was founded in Lagos in 2021 to bring verification, transparent pricing and real customer support to buying, renting and listing real estate across Nigeria.</p>
+  <div class="grid grid-3" style="margin-top:36px">
+    <div class="stat"><div class="lbl">Listings Verified</div><div class="val">12,400+</div></div>
+    <div class="stat"><div class="lbl">Cities Covered</div><div class="val">9</div></div>
+    <div class="stat"><div class="lbl">Registered Agents</div><div class="val">1,860</div></div>
+  </div>
+</div>
+<div class="footer">
+    <div class="cols">
+      <div style="max-width:220px"><div class="brand" style="color:var(--sand);font-family:var(--font-display);font-size:18px;margin-bottom:8px">Celtine Properties</div>Verified listings across Lagos, Abuja & Port Harcourt — for buyers, renters and the agents who serve them.</div>
+      <div><h4>Explore</h4><a href="browse.html">Buy a Home</a><br><a href="browse.html">Rent a Home</a><br><a href="browse.html">Land & Plots</a><br><a href="agent-profile.html">Verified Agents</a></div>
+      <div><h4>Company</h4><a href="about.html">About Us</a><br>Careers<br><a href="contact.html">Contact</a><br>Terms & Privacy</div>
+      <div><h4>List With Us</h4><a href="post-property.html">Post a Property</a><br><a href="subscription-plans.html">Agent Plans</a><br><a href="index.html">Site Map</a></div>
+    </div>
+    <div class="bottom"><span>© 2026 Celtine Properties Ltd.</span><span>Lagos, Nigeria</span></div>
+  </div></div>
+<script src="js/interactions.js"></script>
+</body>
+</html>

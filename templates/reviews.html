@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Reviews & Ratings — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell"><div class="dash">
+    <div class="dash-side">
+      <button class="dash-toggle" type="button" aria-label="Toggle dashboard navigation">☰</button>
+      <a class="dash-item " href="customer-dashboard.html">Overview</a><a class="dash-item " href="saved-properties.html">Saved Properties</a><a class="dash-item " href="schedule-viewing.html">My Viewings</a><a class="dash-item " href="customer-messages.html">Messages</a><a class="dash-item " href="checkout.html">Payments</a><a class="dash-item on" href="reviews.html">My Reviews</a>
+    </div>
+    <div class="dash-main">
+<div class="dash-head"><h2 class="h">Reviews & Ratings</h2></div>
+{% for review in reviews %}<div class="card" style="padding:18px;margin-bottom:14px"><b>{{ review.agent.full_name }}</b> · {{ '★' * review.rating }}<p style="font-size:13px;margin-top:8px;color:#5B6660">{{ review.comment or 'No comment provided.' }}</p></div>{% else %}<div class="empty"><div class="mark">✦</div>No reviews yet.</div>{% endfor %}
+</div>
+  </div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+</body>
+</html>

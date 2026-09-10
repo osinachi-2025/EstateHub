@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Poster Dashboard — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell"><div class="dash">
+    <div class="dash-side">
+      <button class="dash-toggle" type="button" aria-label="Toggle dashboard navigation">☰</button>
+      <a class="dash-item on" href="poster-dashboard.html">Overview</a><a class="dash-item " href="post-property.html">Post New Property</a><a class="dash-item " href="my-listings.html">My Listings</a><a class="dash-item " href="leads.html">Leads & Inquiries</a><a class="dash-item " href="poster-messages.html">Messages</a><a class="dash-item " href="poster-profile.html">Profile & Settings</a><a class="dash-item " href="subscription-plans.html">Subscription Plan</a>
+      <a class="sitemap-link" href="{{ url_for('logout') }}" onclick="localStorage.removeItem('access_token')">↪ Log out</a>
+    </div>
+    <div class="dash-main">
+<div class="dash-head"><div><div class="eyebrow">Agent Dashboard</div><h2 class="h">Good morning, {{ agent.full_name.split()[0] }}</h2></div><a class="btn btn-clay" href="{{ url_for('postproperty') }}">+ Post New Property</a></div>
+<div class="grid grid-4" style="margin-bottom:26px">
+  <div class="stat"><div class="lbl">Active Listings</div><div class="val">{{ active_listings }}</div></div>
+  <div class="stat"><div class="lbl">Views (30d)</div><div class="val">0</div><div class="sub">View tracking is not enabled</div></div>
+  <div class="stat"><div class="lbl">New Leads</div><div class="val">{{ leads_count }}</div></div>
+  <div class="stat"><div class="lbl">Deals Closed</div><div class="val">{{ deals_count }}</div></div>
+</div>
+<h3 class="h" style="margin-bottom:12px">Recent Listings</h3>
+<table><tr><th>Property</th><th>Status</th><th>Price</th><th>Views</th><th>Leads</th></tr>
+{% for listing in listings %}<tr><td>{{ listing.title }}</td><td><span class="badge-pill pill-{{ 'ok' if listing.status == 'verified' else 'warn' if listing.status == 'pending' else 'danger' }}">{{ listing.status }}</span></td><td>₦{{ '{:,.0f}'.format(listing.price) }}</td><td>0</td><td>{{ listing.messages|length }}</td></tr>{% else %}<tr><td colspan="5">No listings yet.</td></tr>{% endfor %}
+</table>
+</div>
+  </div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+</body>
+</html>

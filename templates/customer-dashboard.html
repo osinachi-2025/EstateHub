@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Customer Dashboard — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell"><div class="dash">
+    <div class="dash-side">
+      <button class="dash-toggle" type="button" aria-label="Toggle dashboard navigation">☰</button>
+      <a class="dash-item on" href="customer-dashboard.html">Overview</a><a class="dash-item " href="saved-properties.html">Saved Properties</a><a class="dash-item " href="schedule-viewing.html">My Viewings</a><a class="dash-item " href="customer-messages.html">Messages</a><a class="dash-item " href="checkout.html">Payments</a><a class="dash-item " href="reviews.html">My Reviews</a>
+    </div>
+    <div class="dash-main">
+<div class="dash-head"><div><div class="eyebrow">Welcome back</div><h2 class="h">Hi {{ customer.full_name.split()[0] }}, here's your activity</h2></div></div>
+<div class="grid grid-3" style="margin-bottom:26px">
+  <div class="stat"><div class="lbl">Saved Properties</div><div class="val">{{ saved_count }}</div></div>
+  <div class="stat"><div class="lbl">Viewings Scheduled</div><div class="val">{{ viewings|length }}</div></div>
+  <div class="stat"><div class="lbl">Active Inquiries</div><div class="val">{{ inquiries }}</div></div>
+</div>
+<h3 class="h" style="margin-bottom:12px">Recently Viewed</h3>
+<div class="grid grid-3">{% for saved_property in saved %}{% set property = saved_property.property %}<a class="card" href="{{ url_for('propertydetail', property_id=property.id) }}"><div class="pcard-img">{% if property.images %}<img class="pcard-photo" src="{{ property.images[0].image_url }}" alt="{{ property.title }}">{% endif %}<div class="tickets"><span class="ticket ticket-{{ 'sale' if property.purpose == 'sale' else 'rent' }}">{{ property.purpose|title }}</span></div></div><div class="pcard-body"><div class="pcard-price">₦{{ '{:,.0f}'.format(property.price) }}</div><div class="pcard-title">{{ property.title }}</div><div class="pcard-loc">{{ property.locality or property.area }}, {{ property.state }}</div></div></a>{% else %}<p>No recently viewed properties.</p>{% endfor %}</div>
+</div>
+  </div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+</body>
+</html>

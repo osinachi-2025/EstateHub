@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Leads & Inquiries — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell"><div class="dash">
+    <div class="dash-side">
+      <button class="dash-toggle" type="button" aria-label="Toggle dashboard navigation">☰</button>
+      <a class="dash-item " href="poster-dashboard.html">Overview</a><a class="dash-item " href="post-property.html">Post New Property</a><a class="dash-item " href="my-listings.html">My Listings</a><a class="dash-item on" href="leads.html">Leads & Inquiries</a><a class="dash-item " href="poster-messages.html">Messages</a><a class="dash-item " href="poster-profile.html">Profile & Settings</a><a class="dash-item " href="subscription-plans.html">Subscription Plan</a>
+      <a class="sitemap-link" href="{{ url_for('logout') }}" onclick="localStorage.removeItem('access_token')">↪ Log out</a>
+    </div>
+    <div class="dash-main">
+<div class="dash-head"><h2 class="h">Leads & Inquiries</h2></div>
+<table><tr><th>Customer</th><th>Property</th><th>Message</th><th>Received</th><th>Status</th></tr>
+{% for lead in leads %}<tr><td>{{ lead.sender.full_name }}</td><td>{{ lead.property.title if lead.property else 'General inquiry' }}</td><td>{{ lead.content }}</td><td>{{ lead.created_at.strftime('%Y-%m-%d %H:%M') }}</td><td><span class="badge-pill pill-{{ 'warn' if not lead.is_read else 'ok' }}">{{ 'New' if not lead.is_read else 'Read' }}</span></td></tr>{% else %}<tr><td colspan="5">No leads yet.</td></tr>{% endfor %}
+</table>
+</div>
+  </div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+</body>
+</html>

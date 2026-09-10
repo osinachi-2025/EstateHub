@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Agent Public Profile — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell">
+<div class="topbar">
+    <a class="brand" href="{{ url_for('home') }}"><div class="mk">C</div>Celtine</a>
+    <nav><a class="" href="{{ url_for('home') }}">Home</a><a class="on" href="{{ url_for('browse') }}">Buy / Rent</a><a class="" href="{{ url_for('about') }}">About</a><a class="" href="{{ url_for('contact') }}">Contact</a></nav>
+    <div class="actions">{% if current_user %}<a class="btn btn-line btn-sm" href="{{ url_for('posterdashboard') if current_user.role == 'agent' else url_for('customerdashboard') }}">Dashboard</a><a class="btn btn-clay btn-sm" href="{{ url_for('logout') }}">Log out</a>{% else %}<a class="btn btn-line btn-sm" href="{{ url_for('login') }}">Log in</a><a class="btn btn-clay btn-sm" href="{{ url_for('postproperty') }}">List a Property</a>{% endif %}</div>
+  </div>
+<div class="section-tight">
+  <div style="display:flex;gap:20px;align-items:center;padding-bottom:24px;border-bottom:1px solid var(--line)">
+    <div style="width:74px;height:74px;border-radius:50%;background:var(--gold);color:var(--white);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:26px">{{ profile_agent.full_name[:2]|upper }}</div>
+    <div>
+      <h2 class="h">{{ profile_agent.full_name }}{% if profile_agent.is_verified %} <span class="ticket ticket-verified" style="margin-left:8px">Verified</span>{% endif %}</h2>
+      <div style="font-size:13px;color:#5B6660;margin-top:4px">{{ profile_agent.agency_name or 'Independent property agent' }}</div>
+      <div style="font-family:var(--font-mono);font-size:12px;margin-top:6px">{% if average_rating %}⭐ {{ average_rating }} ({{ reviews_count }} reviews) · {% endif %}{{ listings|length }} active listings</div>
+      {% if profile_agent.phone or profile_agent.email %}<div style="font-size:12px;color:#5B6660;margin-top:7px">{% if profile_agent.phone %}{{ profile_agent.phone }}{% endif %}{% if profile_agent.phone and profile_agent.email %} · {% endif %}{{ profile_agent.email }}</div>{% endif %}
+    </div>
+    <a class="btn btn-clay" style="margin-left:auto" href="{{ url_for('customermessages') }}">Message</a>
+  </div>
+  {% if profile_agent.bio %}<p class="lede" style="max-width:760px;margin-top:18px">{{ profile_agent.bio }}</p>{% endif %}
+  <div style="margin-top:26px"><h3 class="h" style="margin-bottom:14px">Active Listings by {{ profile_agent.full_name }}</h3>
+  <div class="grid grid-3">{% for property in listings %}<a class="card" href="{{ url_for('propertydetail', property_id=property.id) }}"><div class="pcard-img">{% if property.images %}<img class="pcard-photo" src="{{ property.images[0].image_url }}" alt="{{ property.title }}">{% endif %}<div class="tickets"><span class="ticket ticket-{{ 'sale' if property.purpose == 'sale' else 'rent' }}">{{ property.purpose|title }}</span><span class="ticket ticket-verified">Verified</span></div></div><div class="pcard-body"><div class="pcard-price">₦{{ '{:,.0f}'.format(property.price) }}{% if property.price_period %}<span> / {{ property.price_period }}</span>{% endif %}</div><div class="pcard-title">{{ property.title }}</div><div class="pcard-loc">📍 {{ property.locality or property.area }}, {{ property.state }}</div><div class="pcard-meta"><span>{{ property.bedrooms }} Beds</span><span>{{ property.bathrooms }} Baths</span>{% if property.size_sqm %}<span>{{ property.size_sqm }} sqm</span>{% endif %}</div></div></a>{% else %}<p>No verified listings are available for this agent.</p>{% endfor %}</div></div>
+</div>
+<div class="footer">
+    <div class="cols">
+      <div style="max-width:220px"><div class="brand" style="color:var(--sand);font-family:var(--font-display);font-size:18px;margin-bottom:8px">Celtine Properties</div>Verified listings across Lagos, Abuja & Port Harcourt — for buyers, renters and the agents who serve them.</div>
+      <div><h4>Explore</h4><a href="{{ url_for('browse') }}">Buy a Home</a><br><a href="{{ url_for('browse') }}">Rent a Home</a><br><a href="{{ url_for('browse') }}">Land & Plots</a><br><a href="{{ url_for('agentprofile') }}">Verified Agents</a></div>
+      <div><h4>Company</h4><a href="about.html">About Us</a><br>Careers<br><a href="contact.html">Contact</a><br>Terms & Privacy</div>
+      <div><h4>List With Us</h4><a href="{{ url_for('postproperty') }}">Post a Property</a><br><a href="{{ url_for('subscriptionplans') }}">Agent Plans</a><br><a href="{{ url_for('home') }}">Site Map</a></div>
+    </div>
+    <div class="bottom"><span>© 2026 Celtine Properties Ltd.</span><span>Lagos, Nigeria</span></div>
+  </div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+</body>
+</html>

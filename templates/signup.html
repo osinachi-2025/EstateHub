@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sign Up — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell">
+<div class="auth-wrap">
+  <div class="auth-side">
+    <a class="brandmark" href="{{ url_for('home') }}"><div class="mark" style="color:var(--gold);border-color:var(--gold)">C</div><div class="word">Celtine <b>Properties</b></div></a>
+    <div><h2 class="h" style="color:var(--sand);max-width:340px">Join 40,000+ people buying, renting and listing verified property in Nigeria.</h2></div>
+    <div style="font-size:11.5px;color:#8FA79C;font-family:var(--font-mono)">© 2026 Celtine Properties Ltd.</div>
+  </div>
+  <div class="auth-content">
+    <div class="auth-form">
+      <h2 class="h">Create your account</h2>
+      <div class="f-group" style="margin:16px 0"><label>I am signing up as a</label>
+        <div class="chip-row"><button type="button" class="chip on" data-role="customer">Customer — buy/rent</button><button type="button" class="chip" data-role="agent">Agent / Landlord — post listings</button></div>
+      </div>
+      <form id="signup-form">
+      <input type="hidden" name="role" value="customer">
+      <div class="f-row"><div class="f-group"><label for="signup-name">Full Name</label><input id="signup-name" name="full_name" placeholder="Chinedu Eze" required></div><div class="f-group"><label for="signup-phone">Phone</label><input id="signup-phone" name="phone" placeholder="080..."></div></div>
+      <div class="f-group" style="margin-bottom:14px"><label for="signup-email">Email</label><input id="signup-email" name="email" type="email" placeholder="you@email.com" required></div>
+      <div class="f-group" style="margin-bottom:18px"><label for="signup-password">Password</label><input id="signup-password" name="password" type="password" minlength="8" placeholder="••••••••" required></div>
+      <button class="btn btn-clay" style="width:100%;justify-content:center" type="submit">Create Account</button>
+      <p id="auth-message" role="alert" style="margin-top:12px;font-size:12px;color:var(--danger)"></p>
+      </form>
+      <div style="text-align:center;font-size:12.5px;margin-top:16px;color:#5B6660">Already have an account? <a href="{{ url_for('login') }}" style="color:var(--clay);font-weight:600">Log in</a></div>
+    </div>
+  </div>
+</div></div>
+<script src="{{url_for('static', filename='js/interactions.js')}}"></script>
+<script>
+const roleInput = document.querySelector('[name="role"]');
+document.querySelectorAll('[data-role]').forEach((button) => button.addEventListener('click', () => {
+  document.querySelectorAll('[data-role]').forEach((item) => item.classList.remove('on'));
+  button.classList.add('on'); roleInput.value = button.dataset.role;
+}));
+document.getElementById('signup-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const message = document.getElementById('auth-message');
+  const response = await fetch('{{ url_for("api_signup") }}', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(Object.fromEntries(new FormData(event.target)))});
+  const data = await response.json();
+  if (!response.ok) { message.textContent = data.error || 'Unable to create account.'; return; }
+  localStorage.removeItem('access_token');
+  window.location.href = '{{ url_for("login") }}';
+});
+</script>
+</body>
+</html>

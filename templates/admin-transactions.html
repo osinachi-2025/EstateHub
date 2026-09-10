@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Transactions & Payments — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell"><div class="dash">
+    <div class="dash-side">
+      <button class="dash-toggle" type="button" aria-label="Toggle dashboard navigation">☰</button>
+      <a class="dash-item " href="admin-dashboard.html">Overview</a><a class="dash-item " href="admin-users.html">Manage Users</a><a class="dash-item " href="admin-listings.html">Manage Listings</a><a class="dash-item on" href="admin-transactions.html">Transactions</a><a class="dash-item " href="admin-reports.html">Reports & Analytics</a><a class="dash-item " href="admin-settings.html">Site Settings</a><a class="dash-item " href="admin-support.html">Support Tickets</a>
+    </div>
+    <div class="dash-main">
+<div class="dash-head"><h2 class="h">Transactions & Payments</h2></div>
+<div class="grid grid-3" style="margin-bottom:20px">
+  <div class="stat"><div class="lbl">Total Processed</div><div class="val">₦{{ '{:,.0f}'.format(total_processed) }}</div></div>
+  <div class="stat"><div class="lbl">Transactions</div><div class="val">{{ transactions|length }}</div></div>
+  <div class="stat"><div class="lbl">Failed Payments</div><div class="val">{{ failed_count }}</div></div>
+</div>
+<table><tr><th>Ref</th><th>User</th><th>Type</th><th>Amount</th><th>Status</th></tr>
+{% for transaction in transactions %}<tr><td>{{ transaction.reference or ('TXN-' ~ transaction.id) }}</td><td>{{ transaction.user.full_name }}</td><td>{{ transaction.purpose|replace('_', ' ')|title }}</td><td>₦{{ '{:,.0f}'.format(transaction.amount) }}</td><td><span class="badge-pill pill-{{ 'ok' if transaction.status == 'success' else 'danger' if transaction.status == 'failed' else 'warn' }}">{{ transaction.status|title }}</span></td></tr>{% else %}<tr><td colspan="5">No transactions found.</td></tr>{% endfor %}
+</table>
+</div>
+  </div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+</body>
+</html>

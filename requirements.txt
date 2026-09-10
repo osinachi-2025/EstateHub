@@ -1,0 +1,15 @@
+flask
+flask_sqlalchemy
+flask_migrate
+flask_login
+flask_wtf
+flask_cors
+psycopg2-binary
+flask_jwt_extended
+python_dotenv
+pillow
+gunicorn
+email_validator
+cloudinary
+resend
+sendgrid

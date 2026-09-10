@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Manage Listings — Celtine Properties</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static', filename = '/css/style.css')}}">
+</head>
+<body>
+<div class="page-shell"><div class="dash">
+    <div class="dash-side">
+      <button class="dash-toggle" type="button" aria-label="Toggle dashboard navigation">☰</button>
+      <a class="dash-item " href="admin-dashboard.html">Overview</a><a class="dash-item " href="admin-users.html">Manage Users</a><a class="dash-item on" href="admin-listings.html">Manage Listings</a><a class="dash-item " href="admin-transactions.html">Transactions</a><a class="dash-item " href="admin-reports.html">Reports & Analytics</a><a class="dash-item " href="admin-settings.html">Site Settings</a><a class="dash-item " href="admin-support.html">Support Tickets</a>
+    </div>
+    <div class="dash-main">
+<div class="dash-head"><h2 class="h">Manage Listings</h2><div class="chip-row"><span class="chip on">All</span><span class="chip">Pending</span><span class="chip">Flagged</span><span class="chip">Verified</span></div></div>
+{% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="f-hint" style="color:var(--{{ 'palm' if category == 'success' else 'danger' }});margin-bottom:12px">{{ message }}</div>{% endfor %}{% endwith %}
+<table><tr><th>Property</th><th>Poster</th><th>Price</th><th>Status</th><th>Submitted</th><th>Actions</th></tr>
+{% for listing in listings %}<tr><td>{{ listing.title }}</td><td>{{ listing.agent.full_name }}</td><td>₦{{ '{:,.0f}'.format(listing.price) }}</td><td><span class="badge-pill pill-{{ 'ok' if listing.status == 'verified' else 'warn' if listing.status == 'pending' else 'danger' }}">{{ listing.status }}</span></td><td>{{ listing.created_at.strftime('%Y-%m-%d') }}</td><td><a class="btn btn-sm btn-line" href="{{ url_for('admin_listing_review', property_id=listing.id) }}">Review</a></td></tr>{% else %}<tr><td colspan="6">No listings found.</td></tr>{% endfor %}
+</table>
+</div>
+  </div></div>
+<script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
+</body>
+</html>
