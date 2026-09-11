@@ -16,20 +16,27 @@
     <div class="actions">{% if current_user %}<a class="btn btn-line btn-sm" href="{{ url_for('posterdashboard') if current_user.role == 'agent' else url_for('customerdashboard') }}">Dashboard</a><a class="btn btn-clay btn-sm" href="{{ url_for('logout') }}">Log out</a>{% else %}<a class="btn btn-line btn-sm" href="{{ url_for('login') }}">Log in</a><a class="btn btn-clay btn-sm" href="{{ url_for('postproperty') }}">List a Property</a>{% endif %}</div>
   </div>
 <div class="hero">
-  <div class="eyebrow">Lagos · Abuja · Port Harcourt</div>
-  <h1 class="hero-h">Find a place that actually fits how you live — verified, no wahala.</h1>
-  <p class="lede">Every listing on Celtine is inspected and stamped by our team before it goes live. Browse, book a viewing, and move — all in one place.</p>
-  <form class="search-bar" method="get" action="{{ url_for('browse') }}">
-    <div class="search-field"><label for="home-purpose">Looking to</label><select id="home-purpose" name="purpose"><option value="rent">Rent</option><option value="sale">Buy</option><option value="shortlet">Shortlet</option></select></div>
-    <div class="search-field"><label for="home-location">Location</label><input id="home-location" name="location" placeholder="e.g. Lekki, Ikeja..."></div>
-    <div class="search-field"><label for="home-type">Property type</label><select id="home-type" name="property_type"><option value="">Any type</option><option value="flat">Flat / Apartment</option><option value="duplex">Duplex</option><option value="bungalow">Bungalow</option><option value="land">Land</option><option value="commercial">Commercial</option></select></div>
-    <div class="search-field"><label for="home-budget">Budget</label><select id="home-budget" name="budget"><option value="">Any budget</option><option value="under-2m">Under ₦2m</option><option value="2m-10m">₦2m – ₦10m</option><option value="over-10m">₦10m+</option></select></div>
-    <button class="btn btn-clay" style="align-self:flex-end" type="submit">Search Listings</button>
-  </form>
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <div class="eyebrow">Celtine Properties Investment Ltd.</div>
+      <h1 class="hero-h">Find a place that actually fits how you live — verified, no wahala.</h1>
+      <p class="lede">From finding your next home to developing the place you have imagined, Celtine brings property, people and practical expertise together.</p>
+      <form class="search-bar" method="get" action="{{ url_for('browse') }}">
+        <div class="search-field"><label for="home-purpose">Looking to</label><select id="home-purpose" name="purpose"><option value="">Any purpose</option><option value="rent">Rent</option><option value="sale">Buy</option><option value="shortlet">Shortlet</option></select></div>
+        <div class="search-field"><label for="home-location">Location</label><input id="home-location" name="location" placeholder="e.g. Lekki, Ikeja..."></div>
+        <div class="search-field"><label for="home-type">Property type</label><select id="home-type" name="property_type"><option value="">Any type</option><option value="flat">Flat / Apartment</option><option value="duplex">Duplex</option><option value="bungalow">Bungalow</option><option value="land">Land</option><option value="commercial">Commercial</option></select></div>
+        <div class="search-field"><label for="home-budget">Budget</label><select id="home-budget" name="budget"><option value="">Any budget</option><option value="under-2m">Under ₦2m</option><option value="2m-10m">₦2m – ₦10m</option><option value="over-10m">₦10m+</option></select></div>
+        <button class="btn btn-clay" style="align-self:flex-end" type="submit">Search Listings</button>
+      </form>
+    </div>
+    <div class="hero-visual">
+      <img src="{{ url_for('static', filename='image/805576582_1798821754465848_6111790119645891274_n.jpg') }}" alt="Celtine Properties Investment Ltd. homes and services">
+      <div class="hero-stamp"><span>RC 1290328</span><b>Honesty &amp; Good Work</b></div>
+    </div>
+  </div>
 </div>
 <div class="section-tight">
   <div class="chip-row">
-    <a class="chip on" href="{{ url_for('browse') }}">All</a><a class="chip" href="{{ url_for('browse', location='Lekki') }}">Lekki</a><a class="chip" href="{{ url_for('browse', location='Ikeja') }}">Ikeja</a><a class="chip" href="{{ url_for('browse', location='Victoria Island') }}">Victoria Island</a><a class="chip" href="{{ url_for('browse', location='Yaba') }}">Yaba</a><a class="chip" href="{{ url_for('browse', location='Ajah') }}">Ajah</a><a class="chip" href="{{ url_for('browse', location='Ikoyi') }}">Ikoyi</a>
   </div>
 </div>
 <div class="section-tight" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding-top:0">
@@ -37,6 +44,14 @@
   <a class="stat" href="{{ url_for('browse', purpose='rent') }}"><div class="lbl">Rent a home</div><div class="val">→</div><div class="sub">Apartments, houses and more</div></a>
   <a class="stat" href="{{ url_for('browse', purpose='sale') }}"><div class="lbl">Buy a home</div><div class="val">→</div><div class="sub">Explore verified properties</div></a>
 </div>
+<section class="company-band">
+  <div class="company-copy"><div class="eyebrow">More than a property search</div><h2 class="h">One trusted partner for the whole property journey.</h2><p class="lede">Celtine Properties Investment Ltd. is an estate agent, property manager, building-material supplier, developer and general contractor serving Lagos and beyond.</p><a class="btn btn-clay" href="{{ url_for('contact') }}">Talk to our team</a><div class="company-contact"><a href="tel:+2347068497799">0706 849 7799</a><a href="mailto:celstline521@yahoo.com">celstline521@yahoo.com</a></div></div>
+  <div class="company-facts"><div><span class="fact-number">01</span><b>Honest guidance</b><p>Clear conversations from first viewing to final handover.</p></div><div><span class="fact-number">02</span><b>Practical delivery</b><p>Property advice backed by development and construction experience.</p></div><div><span class="fact-number">03</span><b>Local knowledge</b><p>Rooted at 62 Isheri Oshun Road, Bucknor Estate, Ejigbo, Lagos.</p></div></div>
+</section>
+<section class="section services-section">
+  <div class="section-heading"><div><div class="eyebrow">What we do</div><h2 class="h">Property expertise with a wider view.</h2></div><p class="section-note">Whether you are moving, building or investing, start with a team that understands the work behind the address.</p></div>
+  <div class="service-grid"><a class="service-card" href="{{ url_for('browse') }}"><span class="service-index">01</span><h3 class="h">Estate agency</h3><p>Find verified homes, land and commercial spaces for rent or purchase.</p><span class="service-link">Explore properties →</span></a><a class="service-card" href="{{ url_for('contact') }}"><span class="service-index">02</span><h3 class="h">Property management</h3><p>Keep your property cared for, occupied and moving in the right direction.</p><span class="service-link">Start a conversation →</span></a><a class="service-card" href="{{ url_for('contact') }}"><span class="service-index">03</span><h3 class="h">Development &amp; contracting</h3><p>Bring your next build from an idea on paper to a space people can use.</p><span class="service-link">Discuss a project →</span></a><a class="service-card" href="{{ url_for('contact') }}"><span class="service-index">04</span><h3 class="h">Building materials</h3><p>Source dependable materials for residential and commercial projects.</p><span class="service-link">Request a quote →</span></a></div>
+</section>
 <div class="section" style="padding-top:10px">
   <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px">
     <div><div class="eyebrow">{{ 'Featured & Verified' if featured_active else 'Freshly Verified' }}</div><h2 class="h">{{ 'Handpicked homes worth a closer look' if featured_active else 'New on the market this week' }}</h2></div>
@@ -48,17 +63,17 @@
   </a>{% else %}<p>No properties are currently listed.</p>{% endfor %}</div>
 </div>
 <div class="section-tight" style="background:var(--lagoon);color:var(--sand);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px">
-  <div><div class="eyebrow" style="color:var(--gold)">For Agents & Landlords</div><h2 class="h" style="color:var(--sand)">Post your property to 40,000+ verified buyers</h2></div>
+  <div><div class="eyebrow" style="color:var(--gold)">For Agents & Landlords</div><h2 class="h" style="color:var(--sand)">Put your property in front of serious people.</h2><p style="max-width:570px;color:#B9C7C1;font-size:13px;line-height:1.6;margin-top:8px">List with Celtine and let our property-first platform help you find the right attention.</p></div>
   <a class="btn" style="background:var(--gold);color:var(--lagoon)" href="/post-property">Start Listing — It's Free</a>
 </div>
 <div class="footer">
     <div class="cols">
-      <div style="max-width:220px"><div class="brand" style="color:var(--sand);font-family:var(--font-display);font-size:18px;margin-bottom:8px">Celtine Properties</div>Verified listings across Lagos, Abuja & Port Harcourt — for buyers, renters and the agents who serve them.</div>
+      <div style="max-width:220px"><div class="brand" style="color:var(--sand);font-family:var(--font-display);font-size:18px;margin-bottom:8px">Celtine Properties</div>Verified listings across Lagos — for buyers, renters and the agents who serve them.</div>
       <div><h4>Explore</h4><a href="{{ url_for('browse', purpose='sale') }}">Buy a Home</a><br><a href="{{ url_for('browse', purpose='rent') }}">Rent a Home</a><br><a href="{{ url_for('browse', property_type='land') }}">Land & Plots</a><br><a href="{{ url_for('agentprofile') }}">Verified Agents</a></div>
       <div><h4>Company</h4><a href="{{ url_for('about') }}">About Us</a><br>Careers<br><a href="{{ url_for('contact') }}">Contact</a><br>Terms & Privacy</div>
       <div><h4>List With Us</h4><a href="{{ url_for('postproperty') }}">Post a Property</a><br><a href="{{ url_for('subscriptionplans') }}">Agent Plans</a><br><a href="{{ url_for('home') }}">Home</a></div>
     </div>
-    <div class="bottom"><span>© 2026 Celtine Properties Ltd.</span><span>Lagos, Nigeria</span></div>
+    <div class="bottom"><span>© 2026 Celtine Properties Investment Ltd.</span><span>Lagos, Nigeria</span></div>
   </div></div>
 <script src="{{ url_for('static', filename='js/interactions.js') }}"></script>
 </body>

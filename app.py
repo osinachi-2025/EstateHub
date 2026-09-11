@@ -1,12 +1,11 @@
 import os
 import hashlib
 import hmac
-import json
 import secrets
+import smtplib
 from datetime import date, time, timedelta
+from email.message import EmailMessage
 from urllib.parse import urlparse
-from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
 
 import cloudinary
 import cloudinary.uploader
@@ -165,6 +164,14 @@ def api_signup():
         if starter:
             db.session.add(Subscription(agent_id=user.id, plan_id=starter.id, start_date=date.today(), status='active'))
             db.session.commit()
+    try:
+        _send_email(
+            user.email,
+            'Welcome to Celtine Properties',
+            f'Hello {user.full_name},\n\nWelcome to Celtine Properties. Your account is ready, and you can now explore verified properties across Nigeria.\n\nLog in to get started.\n\nCeltine Properties Investment Ltd.',
+        )
+    except (OSError, smtplib.SMTPException, ValueError):
+        app.logger.exception('Welcome email delivery failed for %s.', user.email)
     return auth_response(user)
 
 
@@ -272,6 +279,8 @@ def browse():
             Property.state.ilike(location_pattern),
             Property.area.ilike(location_pattern),
             Property.locality.ilike(location_pattern),
+            Property.street_address.ilike(location_pattern),
+            Property.landmark.ilike(location_pattern),
         ))
     if property_type:
         property_type_map = {
@@ -563,36 +572,37 @@ def _reset_code_hash(code):
     return hmac.new(app.config['SECRET_KEY'].encode(), code.encode(), hashlib.sha256).hexdigest()
 
 
-def _send_reset_code(email, code):
-    api_key = os.environ.get('SENDGRID_API_KEY')
-    sender = os.environ.get('SENDGRID_FROM')
-    if not api_key:
-        return False
-    if not sender:
-        return False
+def _send_email(recipient, subject, body):
+    host = os.environ.get('SMTP_HOST', 'smtp.gmail.com')
+    port = int(os.environ.get('SMTP_PORT', '587'))
+    username = os.environ.get('SMTP_USERNAME') or os.environ.get('GMAIL_EMAIL')
+    password = os.environ.get('SMTP_PASSWORD') or os.environ.get('GMAIL_PASSWORD')
+    sender = os.environ.get('SMTP_FROM') or username
+    use_ssl = os.environ.get('SMTP_USE_SSL', '').strip().lower() in {'1', 'true', 'yes'}
+    if not username or not password or not sender:
+        raise ValueError('SMTP credentials and sender are not configured.')
 
-    payload = json.dumps({
-        'personalizations': [{'to': [{'email': email}]}],
-        'from': {'email': sender},
-        'subject': 'Your Celtine Properties password reset code',
-        'content': [{
-            'type': 'text/plain',
-            'value': (
-                f'Your Celtine Properties password reset code is {code}. '
-                'It expires in 10 minutes. If you did not request this, ignore this email.'
-            ),
-        }],
-    }).encode('utf-8')
-    request = Request(
-        os.environ.get('SENDGRID_API_URL', 'https://api.sendgrid.com/v3/mail/send'),
-        data=payload,
-        headers={'Authorization': f'Bearer {api_key}', 'Content-Type': 'application/json'},
-        method='POST',
-    )
-    with urlopen(request, timeout=15) as response:
-        if response.status not in (200, 202):
-            raise URLError(f'SendGrid returned HTTP {response.status}')
+    message = EmailMessage()
+    message['From'] = sender
+    message['To'] = recipient
+    message['Subject'] = subject
+    message.set_content(body)
+
+    smtp_class = smtplib.SMTP_SSL if use_ssl else smtplib.SMTP
+    with smtp_class(host, port, timeout=15) as smtp:
+        if not use_ssl:
+            smtp.starttls()
+        smtp.login(username, password)
+        smtp.send_message(message)
     return True
+
+
+def _send_reset_code(email, code):
+    return _send_email(
+        email,
+        'Your Celtine Properties password reset code',
+        f'Your Celtine Properties password reset code is {code}. It expires in 10 minutes. If you did not request this, ignore this email.',
+    )
 
 
 def _start_password_reset(email):
@@ -605,28 +615,27 @@ def _start_password_reset(email):
     session.modified = True
     try:
         delivered = _send_reset_code(email, code)
-    except (HTTPError, OSError, ValueError):
+    except (OSError, smtplib.SMTPException, ValueError):
         app.logger.exception('Password reset email delivery failed.')
         delivered = False
-    return code, delivered
+    return delivered
 
 
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
     submitted = False
     delivery_failed = False
-    development_code = None
     email_error = None
     if request.method == 'POST':
         submitted = True
         email = request.form.get('email', '').strip().lower()
         user = User.query.filter_by(email=email).first() if email else None
         if user:
-            development_code, delivered = _start_password_reset(user.email)
+            delivered = _start_password_reset(user.email)
             delivery_failed = not delivered
         else:
             email_error = 'No account was found with that email address.'
-    return render_template('forgot-password.html', submitted=submitted, delivery_failed=delivery_failed, development_code=development_code, email_error=email_error)
+    return render_template('forgot-password.html', submitted=submitted, delivery_failed=delivery_failed, email_error=email_error)
 
 
 @app.route('/reset-password', methods=['GET', 'POST'])
@@ -670,9 +679,9 @@ def resend_password_code():
     user = User.query.filter_by(email=email).first() if email else None
     if not user:
         return redirect(url_for('forgot_password'))
-    development_code, delivered = _start_password_reset(user.email)
+    delivered = _start_password_reset(user.email)
     session.pop('password_reset_verified', None)
-    return render_template('forgot-password.html', submitted=True, delivery_failed=not delivered, development_code=development_code, resent=True)
+    return render_template('forgot-password.html', submitted=True, delivery_failed=not delivered, resent=True)
 
 @app.route('/my-listings')
 def mylistings():
@@ -1041,6 +1050,10 @@ def legacy_template_link(page):
     if not os.path.isfile(template_path):
         abort(404)
     return render_template(template)
+
+@app.route('/health')
+def health():
+    return 'Health check passed!', 200
 
 
 if __name__ == '__main__':

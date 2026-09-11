@@ -84,7 +84,7 @@ web: gunicorn app:app
 
 Add the production environment variables from `.env.example` in Render's Environment settings. Use a Render PostgreSQL database and set `SQLALCHEMY_DATABASE_URI` to its internal connection string. Do not rely on the local SQLite file for production because Render service filesystems are not durable across deployments or restarts.
 
-For property uploads, configure Cloudinary. For password reset codes, configure a verified SendGrid sender and an API key with Mail Send permission.
+For property uploads, configure Cloudinary. For welcome and password reset emails, configure Gmail SMTP with a Gmail App Password. Keep `SMTP_USERNAME` and `SMTP_FROM` on the same Gmail account and use TLS on port `587`.
 
 After deployment, check:
 

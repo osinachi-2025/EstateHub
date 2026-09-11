@@ -19,14 +19,14 @@
   <div>
     <div class="eyebrow">Get in Touch</div>
     <h2 class="h">We reply within one business day</h2>
-    <p class="lede">Head Office: 14 Adeola Odeku Street, Victoria Island, Lagos<br>Phone: +234 901 234 5678<br>Email: hello@celtineproperties.ng</p>
+    <p class="lede">Head Office: 62 Isheri Oshun Rd., Bucknor Estate, Ejigbo, Lagos<br>Phone: <a href="tel:+2347068497799">0706 849 7799</a> / <a href="tel:+2347084598087">0708 459 8087</a><br>Email: <a href="mailto:celstline521@yahoo.com">celstline521@yahoo.com</a></p>
   </div>
-  <div class="form-panel">
-    <div class="f-row"><div class="f-group"><label>Full Name</label><input placeholder="Adaeze Obi"></div><div class="f-group"><label>Email</label><input placeholder="you@email.com"></div></div>
-    <div class="f-group" style="margin-bottom:16px"><label>Subject</label><input placeholder="How can we help?"></div>
-    <div class="f-group" style="margin-bottom:16px"><label>Message</label><textarea placeholder="Type your message..."></textarea></div>
-    <a class="btn btn-clay">Send Message</a>
-  </div>
+  <form id="contact-form" class="form-panel">
+    <div class="f-row"><div class="f-group"><label for="contact-name">Full Name</label><input id="contact-name" name="name" placeholder="Adaeze Obi" required></div><div class="f-group"><label for="contact-email">Email</label><input id="contact-email" name="email" type="email" placeholder="you@email.com" required></div></div>
+    <div class="f-group" style="margin-bottom:16px"><label for="contact-subject">Subject</label><input id="contact-subject" name="subject" placeholder="How can we help?" required></div>
+    <div class="f-group" style="margin-bottom:16px"><label for="contact-message">Message</label><textarea id="contact-message" name="message" placeholder="Type your message..." required></textarea></div>
+    <button class="btn btn-clay" type="submit">Send via Email</button>
+  </form>
 </div>
 <div class="footer">
     <div class="cols">
@@ -38,5 +38,17 @@
     <div class="bottom"><span>© 2026 Celtine Properties Ltd.</span><span>Lagos, Nigeria</span></div>
   </div></div>
 <script src="js/interactions.js"></script>
+<script>
+document.getElementById('contact-form').addEventListener('submit', event => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const values = new FormData(form);
+  const name = values.get('name');
+  const email = values.get('email');
+  const subject = values.get('subject');
+  const message = `My name is ${name}.\n\nEmail: ${email}\nSubject: ${subject}\nMessage: ${values.get('message')}`;
+  window.location.href = `mailto:celstline521@yahoo.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+});
+</script>
 </body>
 </html>
