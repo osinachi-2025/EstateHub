@@ -233,7 +233,7 @@ def setup_admin():
 def home():
     verified_query = Property.query.filter_by(status='verified')
     featured = verified_query.filter_by(is_featured=True).order_by(Property.created_at.desc()).limit(4).all()
-    properties = featured or verified_query.order_by(Property.created_at.desc()).limit(8).all()
+    properties = featured or verified_query.order_by(Property.created_at.desc()).limit(4).all()
     return render_template(
         'home.html',
         properties=properties,

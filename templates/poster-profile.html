@@ -17,7 +17,7 @@
     </div>
     <div class="dash-main">
 <div class="dash-head"><h2 class="h">Profile & Settings</h2></div>
-{% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="f-hint" style="color:var(--{{ 'palm' if category == 'success' else 'danger' }});margin-bottom:12px">{{ message }}</div>{% endfor %}{% endwith %}
+{% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="flash-message flash-{{ 'success' if category == 'success' else 'error' }}" role="status">{{ message }}</div>{% endfor %}{% endwith %}
 <form class="form-panel" style="max-width:560px" method="post">
   <div class="f-row"><div class="f-group"><label>Full Name</label><input name="full_name" value="{{ agent.full_name }}" required></div><div class="f-group"><label>Agency Name</label><input name="agency_name" value="{{ agent.agency_name or '' }}"></div></div>
   <div class="f-row"><div class="f-group"><label>Phone</label><input name="phone" value="{{ agent.phone or '' }}"></div><div class="f-group"><label>Email</label><input value="{{ agent.email }}" readonly></div></div>

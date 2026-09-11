@@ -16,7 +16,7 @@
     </div>
     <div class="dash-main">
 <div class="dash-head"><h2 class="h">Manage Listings</h2><div class="chip-row"><span class="chip on">All</span><span class="chip">Pending</span><span class="chip">Flagged</span><span class="chip">Verified</span></div></div>
-{% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="f-hint" style="color:var(--{{ 'palm' if category == 'success' else 'danger' }});margin-bottom:12px">{{ message }}</div>{% endfor %}{% endwith %}
+{% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="flash-message flash-{{ 'success' if category == 'success' else 'error' }}" role="status">{{ message }}</div>{% endfor %}{% endwith %}
 <table><tr><th>Property</th><th>Poster</th><th>Price</th><th>Status</th><th>Submitted</th><th>Actions</th></tr>
 {% for listing in listings %}<tr><td>{{ listing.title }}</td><td>{{ listing.agent.full_name }}</td><td>₦{{ '{:,.0f}'.format(listing.price) }}</td><td><span class="badge-pill pill-{{ 'ok' if listing.status == 'verified' else 'warn' if listing.status == 'pending' else 'danger' }}">{{ listing.status }}</span></td><td>{{ listing.created_at.strftime('%Y-%m-%d') }}</td><td><a class="btn btn-sm btn-line" href="{{ url_for('admin_listing_review', property_id=listing.id) }}">Review</a></td></tr>{% else %}<tr><td colspan="6">No listings found.</td></tr>{% endfor %}
 </table>

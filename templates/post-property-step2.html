@@ -313,7 +313,7 @@ tr:last-child td{border-bottom:none;}
     <div class="dash-main">
 <div class="dash-head"><h2 class="h">Post a New Property</h2></div>
 <div class="wizard-steps"><div class="wiz-step done"><span class="num">✓</span><span>Name & Address</span></div><div class="wiz-line"></div><div class="wiz-step on"><span class="num">2</span><span>Features</span></div><div class="wiz-line"></div><div class="wiz-step "><span class="num">3</span><span>Photos & Videos</span></div></div>
-{% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="f-hint" style="color:var(--danger);margin-bottom:12px">{{ message }}</div>{% endfor %}{% endwith %}
+{% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="flash-message flash-{{ 'success' if category == 'success' else 'error' }}" role="status">{{ message }}</div>{% endfor %}{% endwith %}
 <form class="form-panel" method="post">
   <div class="f-row">
     <div class="f-group"><label>Property Type</label><select name="property_type" required><option value="">Select a type</option><option>Flat / Apartment</option><option>Duplex</option><option>Bungalow</option><option>Land</option><option>Commercial</option></select></div>

@@ -313,7 +313,7 @@ tr:last-child td{border-bottom:none;}
     <div class="dash-main">
 <div class="dash-head"><h2 class="h">Post a New Property</h2></div>
 <div class="wizard-steps"><div class="wiz-step done"><span class="num">✓</span><span>Name & Address</span></div><div class="wiz-line"></div><div class="wiz-step done"><span class="num">✓</span><span>Features</span></div><div class="wiz-line"></div><div class="wiz-step on"><span class="num">3</span><span>Photos & Videos</span></div></div>
-{% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="f-hint" style="color:var(--danger);margin-bottom:12px">{{ message }}</div>{% endfor %}{% endwith %}
+{% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="flash-message flash-{{ 'success' if category == 'success' else 'error' }}" role="status">{{ message }}</div>{% endfor %}{% endwith %}
 <form id="propertyMediaForm" class="form-panel" method="post" enctype="multipart/form-data" novalidate>
   <div class="f-group" style="margin-bottom:20px"><label>Property Photos</label>
     <label id="photoDropzone" class="empty" tabindex="0" style="padding:30px;display:block;cursor:pointer"><div class="mark">⤒</div><span>Drag & drop photos, or click to upload (min. 4)</span><input id="photoInput" name="photos" type="file" accept="image/*" multiple style="display:none"></label>

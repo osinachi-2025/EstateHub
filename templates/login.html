@@ -23,7 +23,7 @@
       <form id="login-form">
       <div class="f-group" style="margin-bottom:14px"><label for="login-email">Email</label><input id="login-email" type="email" name="email" placeholder="you@email.com" required></div>
       <div class="f-group" style="margin-bottom:8px"><label for="login-password">Password</label><input id="login-password" name="password" type="password" placeholder="••••••••" required></div>
-      <div style="text-align:right;font-size:12px;color:var(--clay);margin-bottom:18px"><a href="{{ url_for('forgot_password') }}">Forgot password?</a>{% if request.args.get('reset') == 'success' %}<span style="display:block;color:var(--ok);margin-top:8px">Password updated. You can now log in.</span>{% endif %}</div>
+      <div style="text-align:right;font-size:12px;color:var(--clay);margin-bottom:18px"><a href="{{ url_for('forgot_password') }}">Forgot password?</a>{% if request.args.get('reset') == 'success' %}<span class="flash-message flash-success" role="status" style="margin-top:10px;text-align:left">Password updated. You can now log in.</span>{% endif %}</div>
       <button class="btn btn-clay" style="width:100%;justify-content:center" type="submit"><span class="btn-label">Log In</span><span class="btn-spinner" hidden aria-hidden="true"></span></button>
       <p id="auth-message" role="alert" style="margin-top:12px;font-size:12px;color:var(--danger)"></p>
       </form>

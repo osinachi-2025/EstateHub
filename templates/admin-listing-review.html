@@ -23,7 +23,7 @@
   </aside>
   <main class="dash-main">
     <div class="dash-head"><div><div class="eyebrow">Listing Review</div><h2 class="h">{{ property.title }}</h2></div><a class="btn btn-line btn-sm" href="{{ url_for('adminlistings') }}">Back to Listings</a></div>
-    {% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="f-hint" style="color:var(--{{ 'palm' if category == 'success' else 'danger' }});margin-bottom:12px">{{ message }}</div>{% endfor %}{% endwith %}
+    {% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="flash-message flash-{{ 'success' if category == 'success' else 'error' }}" role="status">{{ message }}</div>{% endfor %}{% endwith %}
     <div class="grid grid-2">
       <section class="form-panel">
         <div style="height:270px;background:linear-gradient(135deg,var(--palm),var(--lagoon));overflow:hidden;margin-bottom:12px">{% if property.images %}<img src="{{ property.images[0].image_url }}" alt="{{ property.title }}" style="width:100%;height:100%;object-fit:cover;display:block">{% endif %}</div>

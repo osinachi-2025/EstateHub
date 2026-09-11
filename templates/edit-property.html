@@ -23,7 +23,7 @@
   </aside>
   <main class="dash-main">
     <div class="dash-head"><div><div class="eyebrow">My Listings</div><h2 class="h">Edit Property</h2></div><a class="btn btn-line btn-sm" href="{{ url_for('mylistings') }}">Back to Listings</a></div>
-    {% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="f-hint" style="color:var(--{{ 'palm' if category == 'success' else 'danger' }});margin-bottom:12px">{{ message }}</div>{% endfor %}{% endwith %}
+    {% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="flash-message flash-{{ 'success' if category == 'success' else 'error' }}" role="status">{{ message }}</div>{% endfor %}{% endwith %}
     <form class="form-panel" method="post">
       <div class="f-group" style="margin-bottom:16px"><label for="title">Listing Title</label><input id="title" name="title" value="{{ property.title }}" required></div>
       <div class="f-row">
