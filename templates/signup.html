@@ -27,7 +27,7 @@
       <div class="f-row"><div class="f-group"><label for="signup-name">Full Name</label><input id="signup-name" name="full_name" placeholder="Chinedu Eze" required></div><div class="f-group"><label for="signup-phone">Phone</label><input id="signup-phone" name="phone" placeholder="080..."></div></div>
       <div class="f-group" style="margin-bottom:14px"><label for="signup-email">Email</label><input id="signup-email" name="email" type="email" placeholder="you@email.com" required></div>
       <div class="f-group" style="margin-bottom:18px"><label for="signup-password">Password</label><input id="signup-password" name="password" type="password" minlength="8" placeholder="••••••••" required></div>
-      <button class="btn btn-clay" style="width:100%;justify-content:center" type="submit">Create Account</button>
+      <button class="btn btn-clay" style="width:100%;justify-content:center" type="submit"><span class="btn-label">Create Account</span><span class="btn-spinner" hidden aria-hidden="true"></span></button>
       <p id="auth-message" role="alert" style="margin-top:12px;font-size:12px;color:var(--danger)"></p>
       </form>
       <div style="text-align:center;font-size:12.5px;margin-top:16px;color:#5B6660">Already have an account? <a href="{{ url_for('login') }}" style="color:var(--clay);font-weight:600">Log in</a></div>
@@ -44,11 +44,27 @@ document.querySelectorAll('[data-role]').forEach((button) => button.addEventList
 document.getElementById('signup-form').addEventListener('submit', async (event) => {
   event.preventDefault();
   const message = document.getElementById('auth-message');
-  const response = await fetch('{{ url_for("api_signup") }}', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(Object.fromEntries(new FormData(event.target)))});
-  const data = await response.json();
-  if (!response.ok) { message.textContent = data.error || 'Unable to create account.'; return; }
-  localStorage.removeItem('access_token');
-  window.location.href = '{{ url_for("login") }}';
+  const submitButton = event.target.querySelector('button[type="submit"]');
+  const spinner = submitButton.querySelector('.btn-spinner');
+  submitButton.disabled = true;
+  submitButton.setAttribute('aria-busy', 'true');
+  spinner.hidden = false;
+  message.textContent = '';
+  try {
+    const response = await fetch('{{ url_for("api_signup") }}', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(Object.fromEntries(new FormData(event.target)))});
+    const data = await response.json();
+    if (!response.ok) { message.textContent = data.error || 'Unable to create account.'; return; }
+    localStorage.removeItem('access_token');
+    window.location.href = '{{ url_for("login") }}';
+  } catch (error) {
+    message.textContent = 'Unable to reach the server. Please try again.';
+  } finally {
+    if (document.visibilityState !== 'hidden') {
+      submitButton.disabled = false;
+      submitButton.removeAttribute('aria-busy');
+      spinner.hidden = true;
+    }
+  }
 });
 </script>
 </body>
