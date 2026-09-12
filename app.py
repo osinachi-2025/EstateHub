@@ -3,14 +3,15 @@ import hashlib
 import hmac
 import secrets
 import smtplib
-from datetime import date, time, timedelta
+from datetime import date, datetime, time, timedelta
 from email.message import EmailMessage
 from urllib.parse import urlparse
 
 import cloudinary
 import cloudinary.uploader
 from flask import Flask, abort, flash, jsonify, redirect, render_template, request, session, url_for
-from models import db, User, Property, PropertyImage, PropertyVideo, Locality, SavedProperty, Viewing, Message, Transaction, Review, SupportTicket, SubscriptionPlan, Subscription
+from flask_migrate import Migrate
+from models import db, User, Property, PropertyView, PropertyImage, PropertyVideo, Locality, SavedProperty, Viewing, Message, Transaction, Review, SupportTicket, SubscriptionPlan, Subscription
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt, get_jwt_identity, jwt_required
 from dotenv import load_dotenv
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -29,7 +30,9 @@ cloudinary.config(
     secure=True,
 )
 db.init_app(app)
+migrate = Migrate(app, db)
 jwt = JWTManager(app)
+
 database_ready = False
 
 
@@ -67,7 +70,10 @@ def current_user():
 
 @app.context_processor
 def inject_current_user():
-    return {'current_user': current_user()}
+    return {
+        'current_user': current_user(),
+        'get_property_view_stats': get_property_view_stats,
+    }
 
 
 def require_agent():
@@ -87,6 +93,21 @@ def require_role(role):
     if not user:
         return None, redirect(url_for('login', next=request.path))
     return user, None
+
+
+def get_property_view_stats(property_id):
+    base_query = PropertyView.query.filter_by(property_id=property_id)
+    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+    unique_total = base_query.with_entities(PropertyView.session_key).filter(PropertyView.session_key.isnot(None)).distinct().count()
+    today = base_query.filter(PropertyView.viewed_at >= datetime.utcnow() - timedelta(days=1)).with_entities(PropertyView.session_key).filter(PropertyView.session_key.isnot(None)).distinct().count()
+    this_week = base_query.filter(PropertyView.viewed_at >= datetime.utcnow() - timedelta(days=7)).with_entities(PropertyView.session_key).filter(PropertyView.session_key.isnot(None)).distinct().count()
+    thirty_days = base_query.filter(PropertyView.viewed_at >= thirty_days_ago).count()
+    return {
+        'unique_total': unique_total,
+        'today': today,
+        'this_week': this_week,
+        'thirty_days': thirty_days,
+    }
 
 
 def initialize_database():
@@ -899,11 +920,12 @@ def posterdashboard():
     if response:
         return response
     listings = Property.query.filter_by(agent_id=agent.id).order_by(Property.created_at.desc()).all()
+    views_30d = sum(get_property_view_stats(listing.id)['thirty_days'] for listing in listings)
     leads_count = Message.query.filter_by(receiver_id=agent.id).count()
     deals_count = Transaction.query.join(Property, Transaction.property_id == Property.id).filter(
         Property.agent_id == agent.id, Transaction.purpose == 'booking_deposit', Transaction.status == 'success'
     ).count()
-    return render_template('poster-dashboard.html', agent=agent, listings=listings[:5], active_listings=sum(item.status not in {'rejected', 'flagged'} for item in listings), leads_count=leads_count, deals_count=deals_count)
+    return render_template('poster-dashboard.html', agent=agent, listings=listings[:5], active_listings=sum(item.status not in {'rejected', 'flagged'} for item in listings), views_30d=views_30d, leads_count=leads_count, deals_count=deals_count)
 
 @app.route('/poster-messages')
 def postermessages():
@@ -947,6 +969,23 @@ def propertydetail(property_id=None):
     property_record = Property.query.filter_by(id=property_id, status='verified').first()
     if not property_record:
         abort(404)
+    viewer = current_user()
+    session_key = session.get('property_view_session') or f'{request.remote_addr}:{request.user_agent.string}'
+    if not session.get('property_view_session'):
+        session['property_view_session'] = session_key
+        session.modified = True
+
+    repeat_view_cutoff = datetime.utcnow() - timedelta(minutes=30)
+    recent_view = PropertyView.query.filter_by(property_id=property_record.id, session_key=session_key).filter(PropertyView.viewed_at >= repeat_view_cutoff).first()
+    if not recent_view:
+        db.session.add(PropertyView(
+            property_id=property_record.id,
+            user_id=viewer.id if viewer else None,
+            session_key=session_key,
+            ip_address=request.remote_addr,
+        ))
+        db.session.commit()
+
     amenity_labels = {
         column.name: column.name.removeprefix('has_').replace('_', ' ').title()
         for column in Property.__table__.columns if column.name.startswith('has_')

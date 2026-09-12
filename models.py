@@ -48,6 +48,7 @@ class User(db.Model):
     properties = db.relationship("Property", back_populates="agent")
     saved = db.relationship("SavedProperty", back_populates="user")
     viewings = db.relationship("Viewing", back_populates="user")
+    property_views = db.relationship("PropertyView", back_populates="user")
     reviews_written = db.relationship("Review", foreign_keys="Review.user_id", back_populates="user")
     subscription = db.relationship("Subscription", back_populates="agent", uselist=False)
     tickets = db.relationship("SupportTicket", back_populates="user")
@@ -132,10 +133,26 @@ class Property(db.Model):
     videos = db.relationship("PropertyVideo", back_populates="property", cascade="all, delete-orphan")
     saved_by = db.relationship("SavedProperty", back_populates="property")
     viewings = db.relationship("Viewing", back_populates="property")
+    views = db.relationship("PropertyView", back_populates="property", cascade="all, delete-orphan")
     messages = db.relationship("Message", back_populates="property")
 
     def __repr__(self):
         return f"<Property {self.title} - ₦{self.price}>"
+
+
+class PropertyView(db.Model):
+    """Persisted property page views for vendor analytics."""
+    __tablename__ = "property_views"
+
+    id = db.Column(db.Integer, primary_key=True)
+    property_id = db.Column(db.Integer, db.ForeignKey("properties.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
+    session_key = db.Column(db.String(128), nullable=True)
+    ip_address = db.Column(db.String(64), nullable=True)
+    viewed_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    property = db.relationship("Property", back_populates="views")
+    user = db.relationship("User", back_populates="property_views")
 
 
 class PropertyImage(db.Model):

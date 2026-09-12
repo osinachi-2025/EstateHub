@@ -20,13 +20,13 @@
 <div class="dash-head"><div><div class="eyebrow">Agent Dashboard</div><h2 class="h">Good morning, {{ agent.full_name.split()[0] }}</h2></div><a class="btn btn-clay" href="{{ url_for('postproperty') }}">+ Post New Property</a></div>
 <div class="grid grid-4" style="margin-bottom:26px">
   <div class="stat"><div class="lbl">Active Listings</div><div class="val">{{ active_listings }}</div></div>
-  <div class="stat"><div class="lbl">Views (30d)</div><div class="val">0</div><div class="sub">View tracking is not enabled</div></div>
+  <div class="stat"><div class="lbl">Views (30d)</div><div class="val">{{ views_30d }}</div><div class="sub">Recorded property visits</div></div>
   <div class="stat"><div class="lbl">New Leads</div><div class="val">{{ leads_count }}</div></div>
   <div class="stat"><div class="lbl">Deals Closed</div><div class="val">{{ deals_count }}</div></div>
 </div>
 <h3 class="h" style="margin-bottom:12px">Recent Listings</h3>
 <table><tr><th>Property</th><th>Status</th><th>Price</th><th>Views</th><th>Leads</th></tr>
-{% for listing in listings %}<tr><td>{{ listing.title }}</td><td><span class="badge-pill pill-{{ 'ok' if listing.status == 'verified' else 'warn' if listing.status == 'pending' else 'danger' }}">{{ listing.status }}</span></td><td>₦{{ '{:,.0f}'.format(listing.price) }}</td><td>0</td><td>{{ listing.messages|length }}</td></tr>{% else %}<tr><td colspan="5">No listings yet.</td></tr>{% endfor %}
+{% for listing in listings %}{% set stats = get_property_view_stats(listing.id) %}<tr><td>{{ listing.title }}</td><td><span class="badge-pill pill-{{ 'ok' if listing.status == 'verified' else 'warn' if listing.status == 'pending' else 'danger' }}">{{ listing.status }}</span></td><td>₦{{ '{:,.0f}'.format(listing.price) }}</td><td>{{ stats.thirty_days }}</td><td>{{ listing.messages|length }}</td></tr>{% else %}<tr><td colspan="5">No listings yet.</td></tr>{% endfor %}
 </table>
 </div>
   </div></div>
