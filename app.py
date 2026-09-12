@@ -742,6 +742,22 @@ def delete_property_image(property_id, image_id):
     flash('Property image deleted.', 'success')
     return redirect(url_for('edit_property', property_id=property_record.id))
 
+
+@app.post('/property/<int:property_id>/delete')
+def delete_property(property_id):
+    agent, response = require_agent()
+    if response:
+        return response
+    property_record = Property.query.filter_by(id=property_id, agent_id=agent.id).first_or_404()
+    SavedProperty.query.filter_by(property_id=property_id).delete(synchronize_session=False)
+    Viewing.query.filter_by(property_id=property_id).delete(synchronize_session=False)
+    Message.query.filter_by(property_id=property_id).delete(synchronize_session=False)
+    Transaction.query.filter_by(property_id=property_id).update({'property_id': None}, synchronize_session=False)
+    db.session.delete(property_record)
+    db.session.commit()
+    flash('Property deleted successfully.', 'success')
+    return redirect(url_for('mylistings'))
+
 def _draft():
     return session.setdefault('property_draft', {})
 

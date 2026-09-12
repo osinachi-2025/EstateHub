@@ -318,13 +318,32 @@ tr:last-child td{border-bottom:none;}
       <div class="f-group" style="margin-bottom:16px"><label>Listing Title</label><input name="title" value="{{ draft.get('title', '') }}" required placeholder="e.g. 3-Bed Flat, Chevron Drive"></div>
   <div class="f-row">
         <div class="f-group"><label>Purpose</label><select name="purpose"><option value="rent" {% if draft.get('purpose', 'rent') == 'rent' %}selected{% endif %}>For Rent</option><option value="sale" {% if draft.get('purpose') == 'sale' %}selected{% endif %}>For Sale</option><option value="shortlet" {% if draft.get('purpose') == 'shortlet' %}selected{% endif %}>Shortlet</option></select></div>
-        <div class="f-group"><label>State</label><select name="state" required><option value="">Select a state</option><option {% if draft.get('state') == 'Lagos' %}selected{% endif %}>Lagos</option><option {% if draft.get('state') == 'Abuja (FCT)' %}selected{% endif %}>Abuja (FCT)</option><option {% if draft.get('state') == 'Rivers' %}selected{% endif %}>Rivers</option></select></div>
+        <div class="f-group"><label>State</label><select name="state" required><option value="">Select a state</option><option {% if draft.get('state') == 'Lagos' %}selected{% endif %}>Lagos</option></select></div>
   </div>
   <div class="f-row">
     <div class="f-group"><label>Area</label>
       <select id="areaSelect" name="area" required>
         <option value="">Select an area</option>
-        <option>Lekki</option><option>Ikeja</option><option>Yaba</option><option>Victoria Island</option><option>Ikoyi</option><option>Ajah</option><option>Surulere</option>
+        <option value="Agege">Agege</option>
+        <option value="Ajeromi-Ifelodun">Ajeromi-Ifelodun</option>
+        <option value="Alimosho">Alimosho</option>
+        <option value="Amuwo-Odofin">Amuwo-Odofin</option>
+        <option value="Apapa">Apapa</option>
+        <option value="Badagry">Badagry</option>
+        <option value="Epe">Epe</option>
+        <option value="Ibeju-lekki">Ibeju-lekki</option>
+        <option value="Ifako-Ijaiye">Ifako-Ijaiye</option>
+        <option value="Ikeja">Ikeja</option>
+        <option value="Ikorodu">Ikorodu</option>
+        <option value="Kosofe">Kosofe</option>
+        <option value="Lagos Island">Lagos Island</option>
+        <option value="Lagos Mainland">Lagos Mainland</option>
+        <option value="Mushin">Mushin</option>
+        <option value="Ojo">Ojo</option>
+        <option value="Oshodi-Isolo">Oshodi-Isolo</option>
+        <option value="Shomolu">Shomolu</option>
+        <option value="Surulere">Surulere</option>
+        <option value="Eti-Osa">Eti-Osa</option>
       </select>
     </div>
     <div class="f-group"><label>Locality</label>
@@ -345,13 +364,26 @@ tr:last-child td{border-bottom:none;}
 
 // Areas in Lagos -> their specific localities. Selecting an Area repopulates the Locality dropdown.
 const AREA_MAP = {
-  "Lekki": ["Lekki Phase 1", "Osapa London", "Chevron Drive", "Agungi", "Ikate Elegushi"],
-  "Ikeja": ["Ikeja GRA", "Allen Avenue", "Opebi", "Alausa"],
-  "Yaba": ["Alagomeji", "Sabo", "Akoka", "Yaba Tech Road"],
-  "Victoria Island": ["Adeola Odeku", "Ozumba Mbadiwe", "Bar Beach"],
-  "Ikoyi": ["Old Ikoyi", "Parkview", "Banana Island"],
-  "Ajah": ["Abraham Adesanya", "Sangotedo", "Thomas Estate"],
-  "Surulere": ["Adeniran Ogunsanya", "Bode Thomas", "Ogunlana Drive"],
+  "Agege": ["Agege", "Orile Agege", "Dopemu", "Ogba", "Oko-Ogba", "Isokoko","Keke", "Ajegunle", "Tabon-Tabon", "Oke-Koto", "Kara", "Capasco", "Pen Cinema", "Abule Egba", "Fagba"],
+  "Ajeromi-Ifelodun": ["Ajegunle", "Amukoko", "Tolu", "Layeni", "Alaba", "Ojo Road", "Ijora-Badia", "Boundary", "Olodi", "Alaba Rago area", "Ifelodun", "Oke-Afa/Boundary areas"],
+  "Alimosho": ["Alimosho", "Egbeda", "Akowonjo", "Idimu", "Egbe", "Ikotun", "Igando", "Ijegun", "Isheri", "Shasha", "Mosan", "Okunola", "Ayobo", "Ipaja", "Ayobo-Ipaja", "Meiran", "Abule Egba", "Agbado", "Oke-Odo", "Iyana-Ipaja", "Command", "Gowon Estate", "Ipaja", "Mosan-Okunola"],
+  "Amuwo-Odofin": ["Festac Town", "Amuwo", "Odofin", "Mile 2", "Satellite Town", "Kirikiri", "Trade Fair", "Alaba", "Agboju", "Apple Junction", "Festac Extension", "Ago Palace", "Ojo Cantonment", "Ijeshatedo/Amuwo border areas"],
+  "Apapa": ["Apapa", "Apapa GRA", "Liverpool", "Wharf", "Apapa Port", "Tincan Island", "Coconut", "Olodi", "Ijora", "Ijora-Badia", "Apapa-iganmu", "Marine Beach", "Kirikiri", "Dockyard", "Sifax area"],
+  "Badagry": ["Badagry", "Ajara", "Topo", "Ibereko", "Apa", "Awhanjigoh", "Ikoga", "Gberefu", "Kankon", "POta", "Agbara", "Ilogbo", "Seme", "Seme Border", "Aradagun", "Viekete"],
+  "Epe": ["Epe", "Poka", "Eredo", "Epe Town", "Itoikin", "Ilara", "Ejirin", "Ajegunle", "Popo-Obadore", "Odo-Egiri", "Ogunmodi", "Agbowa", "Odomola", "Ibeju/Epe corridor", "Lekki-Epe corridor"],
+  "Ibeju-lekki": ["Ibeju", "Lekki", "Akoko", "Lekki Phase 1", "Lekki Phase 2", "Lekki Phase 3", "Ajah", "Ikate", "Chevron Drive", "VGC", "Lakowe", "Epe Road corridor", "Eleko", " Orimedu", "Bogije", "Sangotedo", "Abijo", "Awoyaya", "Okun-Ajah", "Ajah", "Lekki Free Trade Zone", "Dangote Refinery area", "Elerangbe", "Pan African University area", "Ibeju-Lekki border areas", "Lekki Deep Sea Port area"],
+  "Ifako-Ijaiye": ["Ifako", "Ijaiye", "Ojokoro", "Aule Egba", "Fagba", "Iju", "Iju-Ishaga", "Agege", "Aina-Obe", "Oke-Ira", "Ajuwon", "Aguda", "Meiran", "Alakuko", "Ayeitoro", "Ijaye Housing Estate", "College Road", "Command"],
+  "Ikeja": ["Ikeja", "GRA Ikeja", "Oregun", "Alausa", "Opebi", "Agidingbi", "Ikeja GRA Phase 1", "Ikeja GRA Phase 2", "Ikeja GRA Phase 3", "Ikeja GRA Phase 4", "Ikeja GRA Phase 5", "Ikeja GRA Phase 6", "Ikeja GRA Phase 7", "Ikeja GRA Phase 8", "Ikeja GRA Phase 9", "Ikeja GRA Phase 10", "Allen Avenue", "Oba Akran Avenue", "Alausa GRA", "Opebi GRA", "Agidingbi GRA", "Ikeja City Mall area", "Computer Village area", "Maitama/Allen Avenue corridor", "Awolowo Road corridor", "Ikeja GRA border areas", "Anifowose", "Toyin Street", "Onipetesi", "Onilekere", "Seriki Aro", "Maryland", "Ojodu", "Ojodu Berger", "Ojodu Abiodun", "Ojodu GRA", "Ojodu-Alausa border areas", "Ogba", "Agidingbi"],
+  "Ikorodu": ["Ikorodu", " Ikorodu Town", "Ipakodo", "Agric", "Imota", "Igbogbo", "Baiyeku", "Owutu", "Isawo", "Agbede", "Odogunyan", "Erikodo", "Ogolonto", " Itamaga", "Majidun", "Ita-Elewa", "Ebute", "Imota", "Ijede", "Offin", "Isiwu"],
+  "Kosofe":["Kosofe", "Ojota", "Ketu", "Mile 12", " Alapere", "Agboyi", "Anthony", "Maryland", "Ifako", "Ojodu", "Shangisha", "Magodo", "Isheri", "Ikosi", "Ogudu", "Gbagbada", "Owode-Onirin", " Demurin", "Alausa border areas"],
+  "Lagos Island": ["Lagos Island", "Isale-Eko", "Idumota", "Idumagbo", "Balogun", "Marina", "CMS", "Broad Street", "Nnamdi Azikiwe Street", "Tinubu Square", "Ita-Faji", "Oja-Oba", "Ojuolape", "Oko-Faji", "Oko-Awo", "Olowogbowo", "Ereko", "Tom Jones", "Campos", "Idunganran", "Brazilian Quarters", "Obalende-border areas", "Eko Hotel area", "Iga Idunganran", "Obalende", "Victoria Island", "Ikoyi", "Banana Island", "Lekki Phase 1", "Lekki Phase 2", "Lekki Phase 3"],
+  "Lagos Mainland": ["Lagos Mainland", "Ebute Metta", "Ebute Metta East", "Ebute Metta West", "Yaba border areas", "Oyingbo", "Alagomeji", "Otto", "Iddo", "Otto-Iddo", "Apapa Road", "Adekunle", "Oyadiran", "Fadeyi", "Igbobi", "Onipanu-border areas"],
+  "Mushin":["Mushin", "Palm Avenue", "Papa Ajao", "Idi-Araba", "Olosha", "Itire", "Ilepeju", "Odi-Olowo", "Ojuwole", "Alakara", "Babalosa", "Kayode/Fadeyi", "Onitire", "Moshalashi/Agoro", "Baba Olasha", " Alafia", "Adeoyo", "Atewolara"],
+  "Ojo":["Ojo", "Alaba", "Alaba International Market", "Iyana-Iba", "Iba", "Okokomaiko", "Oto-Awori", "Ijanikin", "Satellite Town-border areas", "Ajangbadi", "Sabo-Ojo", "Ojo Cantonment", "LASU area", "Iyana School", "Abule-Ado", "Festac/Ojo corridor", "Ojo Town", "Ojo GRA", "Ojo Road", "Ojo Market", "Ojo Barracks", "Ojo Police Station", "Ojo Stadium", "Ojo College of Education", "Ojo General Hospital", "Ojo LGA Secretariat", "Ojo Magistrate Court", "Ojo Customary Court", "Ojo Post Office", "Ojo Fire Service Station"],
+  "Oshodi-Isolo":["Oshodi", "Isolo", "Ejigbo", "Ajao Estate", "Mafoluku", "Airport Road", "Okota", "Ago Palace Way", "Ilasa", "Ilasamaja", "Oke-Afa", "Isolo Industrial Estate", "Mushin/Oshodi corridor", "Shogunle", "Ladipo", "Bolade", "Mafoluku-Oshodi", "Cele", "Oshodi GRA", "Oshodi Market", "Oshodi Police Station", "Oshodi Bus Terminal", "Oshodi Stadium", "Oshodi General Hospital", "Oshodi LGA Secretariat", "Oshodi Magistrate Court", "Oshodi Customary Court", "Oshodi Post Office", "Oshodi Fire Service Station"],
+  "Shomolu":["Shomolu", "Somolu", "Bariga", "Fadeyi", "Onipanu", "Pedro", "Palmgrove", "Akoka-border areas", "Bajulaiye", "Lad-Lak", "Abule-Odu", "Igbobi", "Jibowu-border areas", "Wemabod Estate", "Ilupeju-border areas", "Shomolu Town", "Shomolu GRA", "Shomolu Market", "Shomolu Police Station", "Shomolu Bus Terminal", "Shomolu Stadium", "Shomolu General Hospital", "Shomolu LGA Secretariat", "Shomolu Magistrate Court", "Shomolu Customary Court", "Shomolu Post Office", "Shomolu Fire Service Station"],
+  "Surulere":["Surulere", "Aguda", "Lawanson", "Ijeshatedo", "Itire", "Ojuelegba", "Orile", "Akerele", "Shitta", "Adeniran Ogunsanya", "Stadium", "National Stadium", "Tejuosho", "Rabi", "Coker", "Bode Thomas", "Ogunlana Drive", "Eric Moore", "Adelabu", "Masha", "Alhaji Masha", "Surulere Town", "Surulere GRA", "Surulere Market", "Surulere Police Station", "Surulere Bus Terminal", "Surulere Stadium", "Surulere General Hospital", "Surulere LGA Secretariat", "Surulere Magistrate Court", "Surulere Customary Court", "Surulere Post Office", "Surulere Fire Service Station"],
+  "Eti-Osa":["Eti-Osa", "Victoria Island", "Ikoyi", "Obalende", "Lekki", "Oniru", "Maroko", "Ikate", "Ilasan", "Lafiaji", "Ajah", "Ado", "Okun-Ajah", "Ilubirin", "Dolphin Estate", "Parkview Estate", "Banana Island", "Osborne", "Lekki Phase 1", "Lekki Phase 2", "Chevron", "Jakande", "Agungi", "Osapa", "VGC", "Admiralty Way", "Lekki Conservation area", "Ligali Ayorinde", "Adeola Odeku", "Chevron Drive", "Lakowe", "Epe Road corridor", "Eleko", "Orimedu", "Bogije", "Sangotedo", "Abijo", "Awoyaya", "Lekki Free Trade Zone", "Dangote Refinery area", "Elerangbe", "Pan African University area", "Ibeju-Lekki border areas", "Lekki Deep Sea Port area"]
 };
 
 function populateLocalityDropdown() {
